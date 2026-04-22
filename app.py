@@ -1,4 +1,44 @@
 import streamlit as st
+import os
+
+st.set_page_config(page_title="An33shPortal", page_icon="📚") # Fake book icon
+
+# 1. Hide the Sidebar and Menu to look less like a game site
+st.markdown("<style>#MainMenu {visibility: hidden;} footer {visibility: hidden;} .stDeployButton {display:none;}</style>", unsafe_allow_html=True)
+
+# 2. Check if a game was already selected (Session State)
+if 'playing' not in st.session_state:
+    st.session_state.playing = None
+
+# --- PORTAL VIEW ---
+if st.session_state.playing is None:
+    st.title("Project Portal: An33sh")
+    st.write("Select a module to review:")
+    
+    game_dir = "static/slope"
+    if os.path.exists(game_dir):
+        all_games = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
+        choice = st.selectbox("Module:", all_files)
+        
+        if st.button("Open Module"):
+            st.session_state.playing = choice
+            st.rerun()
+    else:
+        st.error("Missing module directory.")
+
+# --- GAME VIEW (The Cloak) ---
+else:
+    if st.button("⬅ Back to Portal"):
+        st.session_state.playing = None
+        st.rerun()
+    
+    file_path = f"static/slope/{st.session_state.playing}"
+    with open(file_path, 'r', encoding='utf-8') as f:
+        game_html = f.read()
+    
+    # Injecting the raw HTML into the current page instead of a new tab
+    st.components.v1.html(game_html, height=800, scrolling=True)
+import streamlit as st
 
 st.set_page_config(page_title="An33shPortal", page_icon="🎮")
 
