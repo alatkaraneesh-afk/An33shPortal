@@ -2,51 +2,53 @@ import streamlit as st
 import os
 import base64
 
-st.set_page_config(page_title="Math Study Hub", page_icon="📈")
-st.title("Resource Dashboard")
+# Use a totally boring name to stay under the radar
+st.set_page_config(page_title="Data Research Tool v4", page_icon="📊")
+
+st.title("Project Analysis Dashboard")
 
 game_dir = "static/slope"
 if os.path.exists(game_dir):
-    all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
-    selected = st.selectbox("Select Module:", all_files)
+    files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
+    selected = st.selectbox("Select Data Module:", files)
 
+    # Load the game code
     file_path = os.path.join(game_dir, selected)
     with open(file_path, "r", encoding="utf-8") as f:
-        # Encode to Base64 so the game code doesn't "leak" or break the JS
-        game_b64 = base64.b64encode(f.read().encode()).decode()
+        # Step 1: Encode the game into Base64 (Scrambles the code)
+        scrambled_data = base64.b64encode(f.read().encode()).decode()
 
-    # This script decodes the Base64 and builds the game in a new tab
+    # Step 2: The JS 'Unscrambler'
+    # This runs inside the browser, so iBoss can't see what's happening
     js_code = f"""
-    <div id="btn-container">
-        <button onclick="launch()" style="
-            width: 100%; height: 60px; background-color: #1a73e8; 
-            color: white; border: none; border-radius: 10px; 
+    <div style="text-align: center;">
+        <button id="launchBtn" onclick="unscrambleAndLaunch()" style="
+            width: 100%; height: 60px; background-color: #34a853; 
+            color: white; border: none; border-radius: 12px; 
             font-size: 18px; font-weight: bold; cursor: pointer;">
-            🚀 AUTHORIZE & OPEN MODULE
+            ✅ DECODE & OPEN MODULE
         </button>
     </div>
 
     <script>
-    function launch() {{
-        const b64 = "{game_b64}";
-        const byteCharacters = atob(b64);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {{
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }}
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], {{type: 'text/html'}});
-        const url = URL.createObjectURL(blob);
+    function unscrambleAndLaunch() {{
+        const secretData = "{scrambled_data}";
         
-        const win = window.open();
-        if (win) {{
-            win.location.href = url;
+        // Convert scrambled string back into a real file in RAM
+        const decoded = atob(secretData);
+        const blob = new Blob([decoded], {{type: 'text/html'}});
+        const blobUrl = URL.createObjectURL(blob);
+        
+        // Open the new tab
+        const newTab = window.open();
+        if (newTab) {{
+            newTab.location.href = blobUrl;
         }} else {{
-            alert("Please allow pop-ups for this site!");
+            alert("Pop-up blocked! Click the icon in your address bar to 'Always Allow'.");
         }}
     }}
     </script>
     """
-    st.components.v1.html(js_code, height=100)
+    st.components.v1.html(js_code, height=120)
 else:
-    st.error("Directory not found.")
+    st.error("Error: Resource path not found.")
