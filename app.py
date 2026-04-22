@@ -12,37 +12,82 @@ if st.session_state.stealth_mode:
 else:
     st.set_page_config(page_title="AN33SH PORTAL", page_icon="🐦‍🔥", layout="wide")
 
-# CUSTOM CSS FOR PRO UI
+# --- UI STYLE UPGRADE (ONLY CSS CHANGED) ---
 st.markdown("""
     <style>
-    /* Hide Only the Menu and Footer, NOT the header/sidebar button */
+    /* Main Background & Font */
+    @import url('https://googleapis.com');
+    
+    html, body, [data-testid="stAppViewContainer"] {
+        background-color: #050505;
+        font-family: 'Inter', sans-serif;
+    }
+
     #MainMenu {visibility: hidden;} 
     footer {visibility: hidden;}
-    ...
 
-    
+    /* Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background-color: #0a0a0a;
+        border-right: 1px solid #ff4b4b33;
+    }
+
     /* Modern Button Styling */
     .stButton>button {
         width: 100%;
-        border-radius: 12px;
+        border-radius: 8px;
         height: 3.5em;
-        background-color: #ff4b4b;
+        background: linear-gradient(135deg, #ff4b4b 0%, #a10000 100%);
         color: white;
         border: none;
-        transition: 0.3s;
+        font-weight: 900;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        box-shadow: 0 4px 15px rgba(255, 75, 75, 0.2);
+        transition: all 0.3s ease;
     }
     .stButton>button:hover {
-        background-color: #ff2b2b;
-        transform: scale(1.02);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 75, 75, 0.4);
+        border: none;
+        color: white;
+    }
+
+    /* Cyberpunk Game Card Style */
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        background: #0f0f0f;
+        border-radius: 16px;
+        border: 1px solid #222;
+        padding: 24px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    [data-testid="stVerticalBlockBorderWrapper"]:hover {
+        border-color: #ff4b4b;
+        background: #141414;
+        box-shadow: 0 0 25px rgba(255, 75, 75, 0.1);
+    }
+
+    /* Text Color Fixes */
+    h1, h2, h3, p, span, label {
+        color: #ffffff !important;
+    }
+    .stCaption {
+        color: #888 !important;
     }
     
-    /* Glassmorphism Card Style */
-    [data-testid="stVerticalBlockBorderWrapper"] {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 15px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        padding: 20px;
-        transition: 0.3s;
+    /* Search Bar Styling */
+    .stTextInput>div>div>input {
+        background-color: #111;
+        color: white;
+        border: 1px solid #333;
+        border-radius: 8px;
+    }
+    
+    /* Educational View Info Box */
+    .stAlert {
+        background-color: #111;
+        border: 1px solid #333;
+        color: white;
     }
     </style>
 """, unsafe_allow_html=True)
