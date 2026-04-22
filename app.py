@@ -5,25 +5,19 @@ st.set_page_config(page_title="An33shPortal", page_icon="🎮", layout="wide")
 
 st.title("An33shPortal 🕹️")
 
-# 1. Search and Game Selection
 game_dir = "static/slope"
-all_files = [f for f in os.listdir(game_dir) if f.endswith(".html") and f not in ["404.html", "index.html"]]
-search_query = st.text_input("🔍 Search games...", "").lower()
-filtered_games = sorted([f for f in all_files if search_query in f.lower()])
+all_files = [f for f in os.listdir(game_dir) if f.endswith(".html")]
+selected_game = st.selectbox("Select Game", sorted(all_files))
 
-# 2. Pick a Game
-selected_game_file = st.selectbox("Select a game to load:", filtered_games, format_func=lambda x: x.replace(".html", "").replace("-", " ").title())
-
-# 3. THE STEALTH LOAD
-if st.button("🚀 LAUNCH GAME"):
-    # This path pulls the file directly from YOUR server
-    game_path = f"app/static/slope/{selected_game_file}"
+if st.button("🚀 GO"):
+    file_path = os.path.join(game_dir, selected_game)
     
-    st.markdown(f"**Now Playing:** {selected_game_file.replace('.html', '').title()}")
+    # READ the file locally so it's not a 'request' iBoss can see
+    with open(file_path, 'r', encoding='utf-8') as f:
+        game_html = f.read()
     
-    # Using an iframe to keep the game 'trapped' inside your Streamlit domain
-    # This prevents iBoss from seeing it as a separate game site
-    st.components.v1.iframe(game_path, height=700, scrolling=True)
+    # Use components.html to inject the raw code directly
+    # This avoids using a 'src' URL that filters hate
+    st.components.v1.html(game_html, height=800, scrolling=True)
 
-st.write("---")
-st.caption("If 'Refused to Connect' appears, try a different game. Some games contain 'trackers' that iBoss hates.")
+st.caption("Tip: If a game fails, try a simple one like 'snake.html' to see if it's a code block.")
