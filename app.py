@@ -6,6 +6,86 @@ import base64
 st.set_page_config(page_title="GAME HUB", page_icon="🎮", layout="wide")
 
 # 2. Header & Your Description
+st.title("GAME HUB 🕹️")
+st.markdown("### Your boy noticed iboss is getting a little crazy. Here, take these games, more will come!")
+st.write("---")
+
+game_dir = "static/slope"
+
+if os.path.exists(game_dir):
+    # Get all .html games (filtering out placeholder)
+    all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html") and f != "placeholder.txt"])
+    
+    # SEARCH BAR (Wrapped to prevent DuplicateElementId error)
+    if all_files:
+        query = st.text_input("🔍 Search for a game:", key="game_search_bar")
+        st.write("---")
+        
+        # Display in a clean list
+        for file_name in all_files:
+            if query.lower() in file_name.lower():
+                display_name = file_name.replace(".html", "").replace("_", " ").replace("-", " ").title()
+                
+                # Create the layout
+                col1, col2, col3 = st.columns([2, 1, 1])
+                
+                with col1:
+                    st.subheader(display_name)
+                
+                # File paths and data
+                file_path = os.path.join(game_dir, file_name)
+                with open(file_path, "rb") as f:
+                    file_bytes = f.read()
+                
+                with col2:
+                    # --- AUTO LAUNCHER (STEALTH BLOB) ---
+                    # Encoding to Base64 hides the code from iBoss scanners
+                    b64_content = base64.b64encode(file_bytes).decode()
+                    js_code = f"""
+                    <script>
+                    function launch_{file_name.replace('.','_').replace('-','_')}() {{
+                        const b64 = "{b64_content}";
+                        const byteCharacters = atob(b64);
+                        const byteNumbers = new Array(byteCharacters.length);
+                        for (let i = 0; i < byteCharacters.length; i++) {{
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                        }}
+                        const byteArray = new Uint8Array(byteNumbers);
+                        const blob = new Blob([byteArray], {{type: 'text/html'}});
+                        const url = URL.createObjectURL(blob);
+                        window.open(url, '_blank');
+                    }}
+                    </script>
+                    <button onclick="launch_{file_name.replace('.','_').replace('-','_')}()" style="width:100%; height:45px; background-color:#1a73e8; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold;">
+                        🚀 AUTO-LAUNCH
+                    </button>
+                    """
+                    st.components.v1.html(js_code, height=60)
+
+                with col3:
+                    # --- SECURE DOWNLOAD ---
+                    st.download_button(
+                        label="📥 DOWNLOAD",
+                        data=file_bytes,
+                        file_name=file_name,
+                        mime="text/html",
+                        key=f"dl_{file_name}"
+                    )
+                st.write("---")
+    else:
+        st.warning("No games found in static/slope/. Time to upload some 'Pure' HTML files!")
+else:
+    st.error("Error: Folder 'static/slope' not found.")
+
+st.caption("Pro-tip: Use Auto-Launch first. If iBoss blocks the new tab, use Download and open it from your computer!")
+import streamlit as st
+import os
+import base64
+
+# 1. Page Config
+st.set_page_config(page_title="GAME HUB", page_icon="🎮", layout="wide")
+
+# 2. Header & Your Description
 st.title("AN33SHPORTAL: GAME HUB 🕹️")
 st.markdown("### Your boy noticed iboss is getting a little crazy. Here, take these games, more will come!")
 st.write("---")
