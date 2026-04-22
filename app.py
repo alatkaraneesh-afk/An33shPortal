@@ -1,3 +1,10 @@
+# Check if a secret "key" is in the URL (e.g., an33sh.streamlit.app/?access=true)
+query_params = st.query_params
+if "access" not in query_params:
+    # If the secret key isn't there, immediately kick them to Google Classroom
+    st.markdown('<meta http-equiv="refresh" content="0; URL=https://google.com">', unsafe_allow_html=True)
+    st.stop()
+
 import streamlit as st
 import os
 import base64
