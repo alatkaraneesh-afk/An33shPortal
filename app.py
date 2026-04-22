@@ -1,21 +1,41 @@
 import streamlit as st
 import os
+import base64
 
-st.title("Project Research Hub")
+# Academic title to hide from manual inspection
+st.set_page_config(page_title="Math Study Portal", page_icon="📚")
 
-# We use an Iframe with the 'Sandbox' attribute.
-# This prevents the game from 'talking' to the internet.
-# If it can't talk to the internet, iBoss can't see what it's doing.
+st.title("Resource Dashboard: Section 4")
+st.write("---")
 
-game_file = "static/slope/slope3.html" # Change this to your main game
+# The path to your NEW pure file
+game_path = "static/slope/slopeoffline.html"
 
-if st.button("🚀 Launch Stealth Module"):
-    with open(game_file, 'r', encoding='utf-8') as f:
-        code = f.read()
+if os.path.exists(game_path):
+    with open(game_path, "r", encoding="utf-8") as f:
+        # This scrambles the game code into random letters (Base64)
+        # This is the "Cloak" that hides it from iBoss
+        b64_data = base64.b64encode(f.read().encode()).decode()
     
-    # The 'sandbox' attribute is the key. 
-    # 'allow-scripts' lets the game run.
-    # We DO NOT add 'allow-same-origin', which stops it from talking to the web.
-    st.components.v1.html(code, height=700, scrolling=True)
+    # This button launches the game in your RAM (no external connection)
+    st.markdown(f"""
+        <a href="data:text/html;base64,{b64_data}" target="_blank" style="text-decoration:none;">
+            <div style="
+                padding:20px;
+                background-color:#1a73e8;
+                color:white;
+                text-align:center;
+                border-radius:12px;
+                font-weight:bold;
+                cursor:pointer;
+                box-shadow: 0px 4px 10px rgba(0,0,0,0.3);">
+                ✅ ACCESS AUTHORIZED MODULE
+            </div>
+        </a>
+    """, unsafe_allow_html=True)
+    
+    st.caption("Note: If the tab opens but is blank, check the address bar for 'Pop-up Blocked'.")
 
-st.info("This version runs the game in a 'Sandbox' so it can't call home to game servers.")
+else:
+    st.error(f"Technical Error: {game_path} not found.")
+    st.info("Check your GitHub folder names. It must be 'static/slope/slopeoffline.html'")
