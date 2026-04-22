@@ -3,10 +3,10 @@ import os
 import base64
 
 # 1. Page Config
-st.set_page_config(page_title="AN33SHPORTAL: GAME HUB", page_icon="🎮", layout="wide")
+st.set_page_config(page_title="GAME HUB", page_icon="🎮", layout="wide")
 
 # 2. Header & Your Description
-st.title("GAME HUB 🕹️")
+st.title("AN33SHPORTAL: GAME HUB")
 st.markdown("### Your boy noticed iboss is getting a little crazy. Here, take these 300+ games, more will come! (REMEMBER TO KEEP THE URL BOX BLANK IF YOU WANT THIS SITE TO STAY UP!)")
 st.write("---")
 
