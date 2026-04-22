@@ -22,7 +22,7 @@ with col1:
 with col2:
     st.title("AN33SHPORTAL 🐦‍🔥")
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games including Minecraft, Among us, etc. Remember to keep the url blank!")
-
+    st.caption("Email me suggestions at alatkaraneesh@gmail.com")
 # 3. Game Discovery
 game_dir = "static/slope"
 if os.path.exists(game_dir): 
