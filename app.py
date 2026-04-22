@@ -1,4 +1,35 @@
 import streamlit as st
+
+st.set_page_config(page_title="Educational Research Portal", page_icon="📚")
+
+st.title("Resource Gateway")
+st.write("If local modules are intercepted, use the encrypted cloud gateways below.")
+
+# These are "Proxies" or "Embedders" that often bypass iboss 
+# because they tunnel the traffic through a different domain.
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.subheader("Gateway A (Recommended)")
+    # Using Google Translate as a Proxy - it's hard for schools to block
+    target_url = "https://github.io"
+    proxy_url = f"https://google.com{target_url}"
+    st.link_button("🌐 Open via Google Cloud", proxy_url)
+
+with col2:
+    st.subheader("Gateway B (Stealth)")
+    # Using a known "unblockable" GitHub mirror
+    st.link_button("🚀 Open via Mirror", "https://miroware.io")
+
+st.info("""
+**The Strategy:** 
+We aren't running the code on your PC anymore. We are asking **Google Translate** to fetch the game for us. 
+1. Click 'Gateway A'.
+2. If it asks to translate, just click 'Original'.
+3. iboss will only see 'google.com' traffic, not 'game' traffic.
+""")
+import streamlit as st
 import os
 
 st.set_page_config(page_title="Project Archive", page_icon="📁")
