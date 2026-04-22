@@ -1,48 +1,37 @@
 import streamlit as st
 import os
-import base64
 
-# Use an academic title to avoid manual teacher inspection
-st.set_page_config(page_title="Data Visualization Portal", page_icon="📊")
+# 1. Use a fake academic title to stay safe
+st.set_page_config(page_title="Assignment Research Hub", page_icon="📝")
 
-st.title("Project Analysis Dashboard")
+st.title("Resource Downloader 📥")
+st.write("If the 'Launch' button is blocked, download the module to run it locally.")
 
-# 1. Path to your 'shelf'
+# 2. Get your game files from the static folder
 game_dir = "static/slope"
-
 if os.path.exists(game_dir):
-    # Find all .html files
     all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
-    selected = st.selectbox("Select Research Module:", all_files)
+    selected = st.selectbox("Select Project Module:", all_files)
 
-    if st.button("🚀 UNBLOCK & LAUNCH"):
-        file_path = os.path.join(game_dir, selected)
-        
-        # Read the file on the SERVER (hidden from iBoss)
-        with open(file_path, "r", encoding="utf-8") as f:
-            html_content = f.read()
+    file_path = os.path.join(game_dir, selected)
+    
+    # 3. Read the file as raw data
+    with open(file_path, "rb") as f:
+        file_data = f.read()
+    
+    # 4. Force a download instead of opening a tab
+    # Schools almost never block downloading .html files for 'coding'
+    st.download_button(
+        label=f"💾 DOWNLOAD {selected.upper()} TO COMPUTER",
+        data=file_data,
+        file_name=f"Project_{selected}",
+        mime="text/html"
+    )
 
-        # Convert to Base64 (Scrambles the game code into random letters)
-        b64 = base64.b64encode(html_content.encode()).decode()
-
-        # This JS trick creates a 'Blob' URL in memory
-        # iBoss cannot block this in advance because the URL is unique to you
-        js_code = f"""
-        <script>
-        function launch() {{
-            const code = atob("{b64}");
-            const blob = new Blob([code], {{ type: 'text/html' }});
-            const url = URL.createObjectURL(blob);
-            window.open(url, '_blank');
-        }}
-        </script>
-        <button onclick="launch()" style="
-            width: 100%; height: 60px; background-color: #1a73e8; 
-            color: white; border: none; border-radius: 10px; 
-            font-size: 18px; font-weight: bold; cursor: pointer;">
-            👉 CLICK TO VIEW AUTHORIZED MODULE
-        </button>
-        """
-        st.components.v1.html(js_code, height=100)
+    st.warning("**HOW TO RUN (iBoss Proof):**")
+    st.write("1. Click the **Download** button above.")
+    st.write("2. Open your computer's **Downloads** folder.")
+    st.write("3. Double-click the file to open it in Chrome/Firefox.")
+    st.write("4. **Success!** Since the file is on your PC, iBoss cannot block it.")
 else:
-    st.error("Technical Error: Storage directory not found.")
+    st.error("Error: Game directory not found.")
