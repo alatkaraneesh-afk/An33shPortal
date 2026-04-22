@@ -7,26 +7,43 @@ query_params = st.query_params
 is_cloaked = query_params.get("is_cloaked") == "true"
 
 def launch_full_cloak():
-    # Replace the URL below with your actual deployed Streamlit URL
+    # Update this with your actual URL
     portal_url = "https://streamlit.app"
+    
     js = f"""
     <script>
-    var win = window.open("about:blank", "_blank");
-    if (win) {{
-        win.document.title = "Advanced Calculus - Module 4";
-        var doc = win.document.body;
-        doc.style.margin = "0"; doc.style.height = "100vh";
-        var iframe = win.document.createElement("iframe");
-        iframe.src = "{portal_url}";
-        iframe.style.width = "100%"; iframe.style.height = "100%"; iframe.style.border = "none";
-        doc.appendChild(iframe);
-        window.location.replace("https://classroom.google.com");
-    }} else {{
-        alert("POP-UP BLOCKED! Allow pop-ups to enter the stealth portal.");
+    function tryOpen() {{
+        // Use window.parent to escape the Streamlit component sandbox
+        var target = window.parent || window;
+        var win = target.open("about:blank", "_blank");
+        
+        if (win) {{
+            win.document.title = "Advanced Calculus - Module 4";
+            var doc = win.document.body;
+            doc.style.margin = "0"; 
+            doc.style.height = "100vh";
+            doc.style.overflow = "hidden";
+            
+            var iframe = win.document.createElement("iframe");
+            iframe.src = "{portal_url}";
+            iframe.style.width = "100%"; 
+            iframe.style.height = "100%"; 
+            iframe.style.border = "none";
+            doc.appendChild(iframe);
+            
+            // Redirect the original tab to look like school work
+            window.parent.location.replace("https://classroom.google.com");
+        } else {{
+            // Show a visible error message if blocked
+            document.getElementById("status").innerHTML = "❌ Pop-up Blocked! Please click the icon in your URL bar and 'Always Allow'.";
+        }
     }}
+    tryOpen();
     </script>
+    <div id="status" style="color: white; font-family: sans-serif; text-align: center;"></div>
     """
-    st.components.v1.html(js, height=0)
+    st.components.v1.html(js, height=50)
+
 
 # --- 2. PAGE SETUP ---
 if 'stealth_mode' not in st.session_state:
