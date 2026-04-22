@@ -1,41 +1,36 @@
 import streamlit as st
 import os
-import base64
 
-# Academic title to hide from manual inspection
-st.set_page_config(page_title="Math Study Portal", page_icon="📚")
+# 1. Academic title to avoid attention
+st.set_page_config(page_title="Data Archive Portal", page_icon="🗄️")
 
-st.title("Resource Dashboard: Section 4")
-st.write("---")
+st.title("Resource Archive")
+st.write("Authorized users: Download the source module to your local station.")
 
-# The path to your NEW pure file
+# 2. Path to your PURE game file
 game_path = "static/slope/slopeoffline.html"
 
 if os.path.exists(game_path):
-    with open(game_path, "r", encoding="utf-8") as f:
-        # This scrambles the game code into random letters (Base64)
-        # This is the "Cloak" that hides it from iBoss
-        b64_data = base64.b64encode(f.read().encode()).decode()
+    # Read the file on the SERVER (hidden from iBoss)
+    with open(game_path, "rb") as f:
+        file_data = f.read()
     
-    # This button launches the game in your RAM (no external connection)
-    st.markdown(f"""
-        <a href="data:text/html;base64,{b64_data}" target="_blank" style="text-decoration:none;">
-            <div style="
-                padding:20px;
-                background-color:#1a73e8;
-                color:white;
-                text-align:center;
-                border-radius:12px;
-                font-weight:bold;
-                cursor:pointer;
-                box-shadow: 0px 4px 10px rgba(0,0,0,0.3);">
-                ✅ ACCESS AUTHORIZED MODULE
-            </div>
-        </a>
-    """, unsafe_allow_html=True)
-    
-    st.caption("Note: If the tab opens but is blank, check the address bar for 'Pop-up Blocked'.")
+    # 3. Use the Streamlit native download button
+    # This bypasses the browser's "New Tab" monitoring
+    st.download_button(
+        label="📥 DOWNLOAD SECURE MODULE (OFFLINE)",
+        data=file_data,
+        file_name="Module_Analysis_V4.html",
+        mime="text/html"
+    )
 
+    st.success("✅ Ready for download.")
+    st.info("""
+    **UNBLOCKING STEPS:**
+    1. Click the **Download** button.
+    2. **Turn OFF your Wi-Fi** on the computer.
+    3. Open the downloaded file from your 'Downloads' folder.
+    4. Once the game loads, turn Wi-Fi back on. iBoss cannot stop a game that started offline!
+    """)
 else:
-    st.error(f"Technical Error: {game_path} not found.")
-    st.info("Check your GitHub folder names. It must be 'static/slope/slopeoffline.html'")
+    st.error("Technical Error: File not found in static/slope/slopeoffline.html")
