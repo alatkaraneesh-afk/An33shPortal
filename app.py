@@ -1,4 +1,37 @@
 import streamlit as st
+
+st.set_page_config(page_title="An33shPortal", page_icon="🎮")
+
+st.title("An33shPortal 🕹️")
+
+# We are hard-coding 1v1.lol to see if we can get it to work first
+st.subheader("Featured Game: 1v1.LOL")
+
+# This link points directly to your static file on the Streamlit server
+# It opens in a new tab to bypass the "Refused to Connect" iframe error
+st.markdown("""
+    <a href="app/static/slope/1v1-lol.html" target="_blank">
+        <button style="
+            width:100%; 
+            height:60px; 
+            background-color:#00ff00; 
+            color:black; 
+            border:none; 
+            border-radius:15px; 
+            cursor:pointer; 
+            font-weight:bold;
+            font-size:20px;">
+            🚀 PLAY 1V1.LOL (DIRECT)
+        </button>
+    </a>
+""", unsafe_allow_html=True)
+
+st.write("---")
+st.write("### All Other Games")
+# Simple dropdown for everything else
+game_choice = st.selectbox("Select another game:", ["slope3.html", "subway-surfers.html", "retro-bowl.html"])
+st.link_button(f"Launch {game_choice}", f"app/static/slope/{game_choice}")
+import streamlit as st
 import os
 
 st.set_page_config(page_title="An33shPortal", page_icon="🎮")
