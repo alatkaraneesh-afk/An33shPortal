@@ -78,8 +78,10 @@ else:
     with col1:
         if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
+        # KEPT YOUR ORIGINAL CAPTION AND EMAIL CAPTION
         st.title("AN33SH PORTAL 🐦‍🔥")
-        st.caption("Keep it stealth. 300+ games. [Report Broken Game](https://google.com)")
+        st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. Remember to turn on educational view when a teacher is spying!")
+        st.caption("Email me suggestions at alatkaraneesh@gmail.com")
 
     game_dir = "static/slope"
     
@@ -91,16 +93,16 @@ else:
             # FEATURED SECTION
             st.subheader("🔥 TRENDING NOW")
             f_cols = st.columns(3)
-            # Add titles here that match your filenames
+            # Add filenames here that you want to be "Featured"
             featured = ["slopeoffline.html", "fnaf.html", "tinyfishing.html"] 
             for i, f_game in enumerate([g for g in featured if g in all_files]):
                 with f_cols[i]:
-                    if st.button(f"⭐ {f_game.replace('.html','').title()}", key=f"feat_{i}"):
+                    if st.button(f"⭐ {f_game.replace('.html','').replace('_', ' ').title()}", key=f"feat_{i}"):
                         launch_game(os.path.join(game_dir, f_game))
 
             st.write("---")
             search_col, page_col = st.columns([3, 1])
-            with search_col: query = st.text_input("🔍 Search 300+ games...", placeholder="FNAF, Slope...").lower()
+            with search_col: query = st.text_input("🔍 Search games...", placeholder="FNAF, Slope...").lower()
             
             filtered = [f for f in all_files if query in f.lower()]
             pages = max(1, (len(filtered) // 12) + 1)
@@ -113,17 +115,17 @@ else:
                 display_name = file_name.replace(".html", "").replace("_", " ").title()
                 with cols[i % 3]:
                     with st.container(border=True):
-                        # THUMBNAIL LOGIC: looks for file_name.jpg
+                        # THUMBNAIL LOGIC: checks for file_name.jpg in the same folder
                         img_path = os.path.join(game_dir, file_name.replace(".html", ".jpg"))
                         if os.path.exists(img_path): st.image(img_path, use_container_width=True)
-                        else: st.write("🎮") 
+                        else: st.markdown("<h1 style='text-align: center;'>🎮</h1>", unsafe_allow_html=True) 
                         
                         st.subheader(display_name)
                         if st.button(f"PLAY", key=f"p_{file_name}"):
                             launch_game(os.path.join(game_dir, file_name))
                         
                         with open(os.path.join(game_dir, file_name), "rb") as f:
-                            st.download_button("📥", f.read(), file_name=file_name, key=f"dl_{file_name}")
+                            st.download_button("📥 DOWNLOAD", f.read(), file_name=file_name, key=f"dl_{file_name}")
 
             st.caption(f"Showing {len(display_list)} of {len(filtered)} games")
         else: st.error("Folder 'static/slope' missing!")
