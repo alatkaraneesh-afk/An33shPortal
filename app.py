@@ -7,13 +7,13 @@ query_params = st.query_params
 is_cloaked = query_params.get("is_cloaked") == "true"
 
 def launch_full_cloak():
-    # Update this with your actual URL
+    # CRITICAL: Change this URL to your actual deployed app link
     portal_url = "https://streamlit.app"
     
     js = f"""
     <script>
     function tryOpen() {{
-        // Use window.parent to escape the Streamlit component sandbox
+        // Escape the Streamlit iframe sandbox
         var target = window.parent || window;
         var win = target.open("about:blank", "_blank");
         
@@ -31,18 +31,16 @@ def launch_full_cloak():
             iframe.style.border = "none";
             doc.appendChild(iframe);
             
-            // Redirect the original tab to look like school work
-            window.parent.location.replace("https://classroom.google.com");
+            // Redirect original tab to hide the evidence
+            target.location.replace("https://google.com");
         } else {{
-            // Show a visible error message if blocked
-            document.getElementById("status").innerHTML = "❌ Pop-up Blocked! Please click the icon in your URL bar and 'Always Allow'.";
-        }
+            alert("❌ Pop-up Blocked! Click the icon in your address bar and select 'Always Allow'.");
+        }}
     }}
     tryOpen();
     </script>
-    <div id="status" style="color: white; font-family: sans-serif; text-align: center;"></div>
     """
-    st.components.v1.html(js, height=50)
+    st.components.v1.html(js, height=0)
 
 
 # --- 2. PAGE SETUP ---
@@ -66,9 +64,12 @@ if not is_cloaked:
     st.title("Student Resource Portal")
     st.info("Authenticated Session Required")
     st.write("Please click below to launch your educational modules in a secure window.")
+    
+    placeholder = st.empty()
     if st.button("🚀 LAUNCH SECURE MODULES", type="primary"):
-        launch_full_cloak()
-    st.stop() # Prevents the rest of the app from loading on the "unmasked" URL
+        with placeholder:
+            launch_full_cloak()
+    st.stop() 
 
 # --- 4. THE ACTUAL APP (Only runs inside about:blank) ---
 with st.sidebar:
@@ -122,7 +123,7 @@ else:
                         with open(file_path, "rb") as f:
                             binary_data = f.read()
                             b64 = base64.b64encode(binary_data).decode()
-                        js = f"""<button onclick="var w=window.open('about:blank');w.document.write(atob('{b64}'));w.document.close();" style="width:100%; height:40px; background:#ff4b4b; color:white; border:none; border-radius:8px; cursor:pointer;">🚀 LAUNCH STEALTH</button>"""
+                        js = f"""<button onclick="var target = window.parent || window; var w=target.open('about:blank'); w.document.write(atob('{b64}')); w.document.close();" style="width:100%; height:40px; background:#ff4b4b; color:white; border:none; border-radius:8px; cursor:pointer;">🚀 LAUNCH STEALTH</button>"""
                         st.components.v1.html(js, height=50)
                         st.download_button("📥 Download HTML", binary_data, file_name=file_name, key=f"dl_{file_name}")
     else:
