@@ -13,48 +13,41 @@ st.write("---")
 game_dir = "static/slope"
 
 if os.path.exists(game_dir):
-    # This automatically finds ALL your new games (fnaf, tinyfishing, chess, etc.)
     all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html") and f != "placeholder.txt"])
     
     if all_files:
-        # Search bar for the boys to find specific games
         query = st.text_input("🔍 Search for a game:", key="main_search").lower()
         st.write("---")
         
-        # Grid layout: 3 games per row
         cols = st.columns(3)
-        
         count = 0
         for i, file_name in enumerate(all_files):
-            # Clean up the name for display (e.g. 'tinyfishing.html' -> 'Tinyfishing')
             display_name = file_name.replace(".html", "").replace("_", " ").replace("-", " ").title()
             
-            # Filter based on search query
             if query in display_name.lower():
                 with cols[count % 3]:
                     st.subheader(display_name)
                     
-                    # Load file data
                     file_path = os.path.join(game_dir, file_name)
                     with open(file_path, "rb") as f:
                         file_bytes = f.read()
                     
-                    # --- AUTO LAUNCHER (BLOB) ---
+                    # --- AUTO LAUNCHER (ABOUT:BLANK STEALTH) ---
+                    # We escape the code properly so it doesn't break the JS injection
                     b64_content = base64.b64encode(file_bytes).decode()
                     func_id = f"launch_{i}"
                     js_code = f"""
                     <script>
                     function {func_id}() {{
-                        const b64 = "{b64_content}";
-                        const byteCharacters = atob(b64);
-                        const byteNumbers = new Array(byteCharacters.length);
-                        for (let i = 0; i < byteCharacters.length; i++) {{
-                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                        var win = window.open("about:blank", "_blank");
+                        if (win) {{
+                            const b64 = "{b64_content}";
+                            const html = atob(b64);
+                            win.document.write(html);
+                            win.document.close();
+                        }} else {{
+                            alert("Pop-up blocked! Please allow pop-ups for this site.");
                         }}
-                        const byteArray = new Uint8Array(byteNumbers);
-                        const blob = new Blob([byteArray], {{type: 'text/html'}});
-                        const url = URL.createObjectURL(blob);
-                        window.open(url, '_blank');
                     }}
                     </script>
                     <button onclick="{func_id}()" style="width:100%; height:40px; background-color:#1a73e8; color:white; border:none; border-radius:8px; cursor:pointer; font-weight:bold; margin-bottom:5px;">
@@ -78,4 +71,4 @@ if os.path.exists(game_dir):
 else:
     st.error("Error: Folder 'static/slope' not found.")
 
-st.caption("Pro-tip: Use Auto-Launch first. If iBoss blocks the new tab, use Download and open it from your computer!")
+st.caption("Pro-tip: Auto-Launch opens in 'about:blank' for extra stealth. If it still blocks, just Download.")
