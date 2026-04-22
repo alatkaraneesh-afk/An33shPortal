@@ -1,5 +1,40 @@
 import streamlit as st
 import os
+
+st.set_page_config(page_title="Project Archive", page_icon="📁")
+
+st.title("Project File Downloader")
+st.write("If the preview is blocked, download the source file to run it locally.")
+
+game_dir = "static/slope"
+if os.path.exists(game_dir):
+    all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
+    selected = st.selectbox("Select Project File:", all_files)
+
+    file_path = os.path.join(game_dir, selected)
+    
+    with open(file_path, "rb") as f:
+        file_data = f.read()
+    
+    # This button forces the browser to download the file instead of opening it
+    st.download_button(
+        label=f"📥 DOWNLOAD {selected.upper()}",
+        data=file_data,
+        file_name=f"Project_{selected}",
+        mime="text/html"
+    )
+
+    st.info("""
+    **HOW TO RUN:**
+    1. Click the **Download** button above.
+    2. Go to your computer's **Downloads** folder.
+    3. Right-click the file and 'Open with' Chrome or Firefox.
+    4. Since the file is on your PC, iBoss cannot block the connection!
+    """)
+else:
+    st.error("Technical Error: Storage directory not found.")
+import streamlit as st
+import os
 import base64
 
 # Use a totally boring name to stay under the radar
