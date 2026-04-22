@@ -77,7 +77,7 @@ else:
             st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
         st.title("AN33SHPORTAL 🐦‍🔥")
-        st.caption("300+ Games | Stealth Mode | By: An33sh")
+        st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. Remember to turn on educational view when a teacher is spying!")
 
     game_dir = "static/slope"
     
