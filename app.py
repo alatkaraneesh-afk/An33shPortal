@@ -1,3 +1,6 @@
+import streamlit as st
+import os
+import base64
 # Check if a secret "key" is in the URL (e.g., an33sh.streamlit.app/?access=true)
 query_params = st.query_params
 if "access" not in query_params:
@@ -5,9 +8,6 @@ if "access" not in query_params:
     st.markdown('<meta http-equiv="refresh" content="0; URL=https://google.com">', unsafe_allow_html=True)
     st.stop()
 
-import streamlit as st
-import os
-import base64
 
 # 1. SETUP SESSION STATE FOR STEALTH (Default to Study Mode for safety)
 if 'stealth_mode' not in st.session_state:
