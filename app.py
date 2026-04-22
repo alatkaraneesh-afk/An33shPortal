@@ -4,7 +4,7 @@ import base64
 
 # 1. Page Config
 st.set_page_config(page_title="GAME HUB", page_icon="🎮", layout="wide")
-
+st.logo("static/slope/an33shlogo.png", size="medium")
 # 2. Header & Your Description
 st.title("AN33SHPORTAL: GAME HUB")
 st.markdown("### Your boy noticed iboss is getting a little crazy. Here, take these 300+ games, more will come! (REMEMBER TO KEEP THE URL BOX BLANK IF YOU WANT THIS SITE TO STAY UP!)")
