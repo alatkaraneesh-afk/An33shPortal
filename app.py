@@ -15,8 +15,11 @@ else:
 # CUSTOM CSS FOR PRO UI
 st.markdown("""
     <style>
-    /* Hide Streamlit elements */
-    #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
+    /* Hide Only the Menu and Footer, NOT the header/sidebar button */
+    #MainMenu {visibility: hidden;} 
+    footer {visibility: hidden;}
+    ...
+
     
     /* Modern Button Styling */
     .stButton>button {
