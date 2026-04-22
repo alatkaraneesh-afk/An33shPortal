@@ -21,11 +21,11 @@ with col1:
         st.image("static/slope/an33shlogo.jpg", width=100)
 with col2:
     st.title("AN33SHPORTAL 🐦‍🔥")
-    st.caption("300+ Games | Stealth Mode Enabled")
+    st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games including Minecraft, Among us, etc. Remember to keep the url blank!")
 
 # 3. Game Discovery
 game_dir = "static/slope"
-if os.path.exists(game_dir):
+if os.path.exists(game_dir): 
     all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
     
     # Search & Pagination
