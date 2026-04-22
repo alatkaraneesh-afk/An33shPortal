@@ -59,7 +59,7 @@ else:
             st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
         st.title("AN33SHPORTAL 🐦‍🔥")
-        st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. Remember to keep the url blank!")
+        st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. Remember to turn on educational view when a teacher is spying!")
         st.caption("Email me suggestions at alatkaraneesh@gmail.com")
 
     game_dir = "static/slope"
