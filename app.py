@@ -5,14 +5,17 @@ import base64
 # 1. Page Config
 st.set_page_config(page_title="GAME HUB", page_icon="🎮", layout="wide")
 # Add this right after st.set_page_config
-with st.sidebar:
-    logo_path = "static/slope/an33shlogo.png"
-    if os.path.exists(logo_path):
-        st.image(logo_path, use_container_width=True)
-    else:
-        st.subheader("😈 AN33SHPORTAL")
-    st.write("---")
-    st.markdown("### The ultimate unblocked vault.")
+# 1. Display logo at the top center
+logo_path = "static/slope/an33shlogo.png"
+if os.path.exists(logo_path):
+    # This centers the image
+    left_co, cent_co, last_co = st.columns(3)
+    with cent_co:
+        st.image(logo_path, width=200)
+else:
+    # Fallback if image isn't found
+    st.write("### 🎮 AN33SHPORTAL")
+
 
 # 2. Header & Your Description
 st.title("AN33SHPORTAL: GAME HUB")
