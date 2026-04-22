@@ -7,41 +7,40 @@ query_params = st.query_params
 is_cloaked = query_params.get("is_cloaked") == "true"
 
 def launch_full_cloak():
-    # CRITICAL: Change this URL to your actual deployed app link
+    # Use YOUR actual URL here
     portal_url = "https://streamlit.app"
     
     js = f"""
     <script>
     function tryOpen() {{
-        // Escape the Streamlit iframe sandbox
         var target = window.parent || window;
         var win = target.open("about:blank", "_blank");
         
         if (win) {{
             win.document.title = "Advanced Calculus - Module 4";
-            var doc = win.document.body;
-            doc.style.margin = "0"; 
-            doc.style.height = "100vh";
-            doc.style.overflow = "hidden";
             
-            var iframe = win.document.createElement("iframe");
-            iframe.src = "{portal_url}";
-            iframe.style.width = "100%"; 
-            iframe.style.height = "100%"; 
-            iframe.style.border = "none";
-            doc.appendChild(iframe);
+            // This script forces the tab to stay as about:blank but pulls the content
+            var script = win.document.createElement("script");
+            script.src = "https://googleapis.com";
             
-            // Redirect original tab to hide the evidence
-            target.location.replace("https://google.com");
+            win.document.body.innerHTML = `
+                <style>
+                    body, html {{ margin: 0; padding: 0; height: 100%; overflow: hidden; }}
+                    iframe {{ width: 100%; height: 100%; border: none; }}
+                </style>
+                <iframe src="{portal_url}"></iframe>
+            `;
+            
+            // Redirect the original tab to hide the evidence
+            target.location.replace("https://classroom.google.com");
         }} else {{
-            alert("❌ Pop-up Blocked! Click the icon in your address bar and select 'Always Allow'.");
+            alert("❌ Pop-up Blocked! Please allow pop-ups for this site.");
         }}
     }}
     tryOpen();
     </script>
     """
     st.components.v1.html(js, height=0)
-
 
 # --- 2. PAGE SETUP ---
 if 'stealth_mode' not in st.session_state:
@@ -59,7 +58,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 3. THE LANDER (Only shows if NOT in about:blank) ---
+# --- 3. THE LANDER ---
 if not is_cloaked:
     st.title("Student Resource Portal")
     st.info("Authenticated Session Required")
@@ -71,7 +70,7 @@ if not is_cloaked:
             launch_full_cloak()
     st.stop() 
 
-# --- 4. THE ACTUAL APP (Only runs inside about:blank) ---
+# --- 4. THE ACTUAL APP ---
 with st.sidebar:
     st.title("Admin Controls")
     if st.checkbox("Enable Educational View", value=st.session_state.stealth_mode):
