@@ -33,7 +33,7 @@ def launch_full_cloak():
             
             // Redirect original tab to hide the evidence
             target.location.replace("https://google.com");
-        } else {{
+        }} else {{
             alert("❌ Pop-up Blocked! Click the icon in your address bar and select 'Always Allow'.");
         }}
     }}
@@ -54,8 +54,8 @@ else:
 
 st.markdown("""
     <style>
-    .stButton>button { width: 100%; border-radius: 10px; height: 3em; font-weight: bold; }
-    #MainMenu {visibility: hidden;} footer {visibility: hidden;}
+    .stButton>button {{ width: 100%; border-radius: 10px; height: 3em; font-weight: bold; }}
+    #MainMenu {{visibility: hidden;}} footer {{visibility: hidden;}}
     </style>
 """, unsafe_allow_html=True)
 
@@ -84,7 +84,7 @@ with st.sidebar:
 if st.session_state.stealth_mode:
     st.title("Module 4: Differential Equations")
     st.info("Current Topic: Linear Second-Order Equations with Constant Coefficients")
-    st.markdown("### Overview\nIn this section, we explore methodology for solving differential equations...")
+    st.markdown("### Overview\\nIn this section, we explore methodology for solving differential equations...")
     st.image("https://wikimedia.org", caption="Fig 1.2: Sinusoidal Variance")
 else:
     col1, col2 = st.columns([1, 5])
