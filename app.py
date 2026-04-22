@@ -6,7 +6,7 @@ import base64
 st.set_page_config(page_title="GAME HUB", page_icon="🤫", layout="wide")
 
 # 2. Header & Your Description
-st.title("GAME HUB 🕹️")
+st.title("AN33SHPORTAL: GAME HUB 🐦‍🔥")
 st.markdown("### Your boy noticed iboss is getting a little crazy. Here, take these games, more will come!")
 st.write("---")
 
