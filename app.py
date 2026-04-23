@@ -74,11 +74,18 @@ if st.session_state.stealth_mode:
     st.markdown("### Overview\nSolving equations of the form: $$ay'' + by' + cy = 0$$")
     st.image("https://wikimedia.org", caption="Fig 1.2: Sinusoidal Variance")
 else:
+    # --- HISTORY MASKING SCRIPT ---
+    # This rewrites the URL bar to a fake Classroom link to fool teachers/tracking
+    st.components.v1.html("""
+        <script>
+        window.history.replaceState({}, '', 'https://google.com');
+        </script>
+    """, height=0)
+
     col1, col2 = st.columns([1, 5])
     with col1:
         if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
-        # KEPT YOUR ORIGINAL CAPTION AND EMAIL CAPTION
         st.title("AN33SH PORTAL 🐦‍🔥")
         st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. Remember to turn on educational view when a teacher is spying!")
         st.caption("Email me suggestions at alatkaraneesh@gmail.com")
@@ -90,10 +97,8 @@ else:
         if os.path.exists(game_dir): 
             all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
             
-            # FEATURED SECTION
             st.subheader("🔥 TRENDING NOW")
             f_cols = st.columns(3)
-            # Add filenames here that you want to be "Featured"
             featured = ["slopeoffline.html", "fnaf.html", "tinyfishing.html"] 
             for i, f_game in enumerate([g for g in featured if g in all_files]):
                 with f_cols[i]:
@@ -115,7 +120,6 @@ else:
                 display_name = file_name.replace(".html", "").replace("_", " ").title()
                 with cols[i % 3]:
                     with st.container(border=True):
-                        # THUMBNAIL LOGIC: checks for file_name.jpg in the same folder
                         img_path = os.path.join(game_dir, file_name.replace(".html", ".jpg"))
                         if os.path.exists(img_path): st.image(img_path, use_container_width=True)
                         else: st.markdown("<h1 style='text-align: center;'>🎮</h1>", unsafe_allow_html=True) 
