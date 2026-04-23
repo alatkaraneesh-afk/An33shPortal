@@ -4,7 +4,7 @@ import base64
 import random
 
 # --- 0. DEVELOPER NOTIFICATION ---
-LATEST_UPDATE = "Should i add mommy asmr lol"
+LATEST_UPDATE = "Should i add mommy asmr lol -An33sh"
 
 # 1. SETUP SESSION STATE
 if 'stealth_mode' not in st.session_state:
