@@ -4,7 +4,7 @@ import base64
 import random
 
 # --- 0. DEVELOPER NOTIFICATION (CHANGE TEXT HERE) ---
-LATEST_UPDATE = "🚀 50 GAMES LIVE! 300+ coming soon. Remember to stay stealth. - An33sh"
+LATEST_UPDATE = "Hey guys! I added some games that you'll love. Stay stealthy. - An33sh"
 
 # 1. SETUP SESSION STATE
 if 'stealth_mode' not in st.session_state:
