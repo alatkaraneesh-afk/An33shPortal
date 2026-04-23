@@ -5,16 +5,29 @@ import random
 import requests
 
 # --- 0. NOTIFICATION HELPER ---
+# --- 0. NOTIFICATION HELPER ---
 def get_notif_from_github():
     try:
-        # Pulls text from your GitHub repo
-        url = "https://githubusercontent.com"
-        response = requests.get(url, timeout=5)
+        # We add a random number to the end (?v=...) to force it to bypass cache
+        # This helps make sure the bros get the NEWEST message instantly
+        import random
+        v = random.randint(1, 1000)
+        
+        # EXACT LINK to your GitHub file
+        url = f"https://githubusercontent.com{v}"
+        
+        # Using a browser-like User Agent to sneak past the filter
+        headers = {'User-Agent': 'Mozilla/5.0'}
+        response = requests.get(url, headers=headers, timeout=5)
+        
         if response.status_code == 200:
             return response.text
-        return "No new updates right now."
-    except:
-        return "Connect to internet to check for updates."
+        else:
+            return f"System busy (Error {response.status_code}). Check back in a bit!"
+    except Exception as e:
+        # If it still fails, it's definitely the school's filter blocking GitHub Raw
+        return "⚠️ iBoss is blocking the update server. Join the Discord for news!"
+
 
 # 1. SETUP SESSION STATE
 if 'stealth_mode' not in st.session_state:
