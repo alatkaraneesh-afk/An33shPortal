@@ -154,7 +154,7 @@ else:
     st.title("AN33SH PORTAL 🐦‍🔥")
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. KEEP THE URL BOX BLANK AND NEVER LET A TEACHER SEE THIS SITE.")
     # Restored Suggestions Caption
-    st.caption("SUGGESTIONS: https://docs.google.com/forms/d/e/1FAIpQLSeMT7Ty9wa4yjAFIDdilg6tlS0a93tY8trDL-KcDYhfcFHkYw/viewform")
+    st.caption("SUGGESTIONS: https://forms.gle/32uS6xmQuGyHP6Hi8")
     st.markdown('</div>', unsafe_allow_html=True)
 
     game_dir = "static/slope"
