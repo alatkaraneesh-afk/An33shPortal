@@ -2,12 +2,19 @@ import streamlit as st
 import os
 import base64
 import random
+import requests
 
-# --- 0. NOTIFICATIONS (Update these here) ---
-NOTIFS = [
-    "🚀 UPDATE: Added 10+ new games!",
-    "⚠️ REMEMBER: Use the ghost bar for stealth.",
-]
+# --- 0. NOTIFICATION HELPER ---
+def get_notif_from_github():
+    try:
+        # Pulls text from your GitHub repo
+        url = "https://githubusercontent.com"
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            return response.text
+        return "No new updates right now."
+    except:
+        return "Connect to internet to check for updates."
 
 # 1. SETUP SESSION STATE
 if 'stealth_mode' not in st.session_state:
@@ -52,27 +59,9 @@ st.markdown("""
         color: white; border: none; font-weight: 900;
     }
     
-    /* SPYING WARNING STYLE */
     .spy-warning {
-        color: #ff4b4b;
-        font-weight: 900;
-        font-size: 14px;
-        text-align: center;
-        border: 2px solid #ff4b4b;
-        padding: 10px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        text-transform: uppercase;
-    }
-
-    /* NOTIFICATION STYLE */
-    .notif-box {
-        background: rgba(255, 75, 75, 0.1);
-        border-left: 4px solid #ff4b4b;
-        padding: 10px;
-        border-radius: 5px;
-        margin-bottom: 10px;
-        font-size: 13px;
+        color: #ff4b4b; font-weight: 900; font-size: 14px; text-align: center;
+        border: 2px solid #ff4b4b; padding: 10px; border-radius: 10px; margin-bottom: 20px; text-transform: uppercase;
     }
 
     [data-testid="stVerticalBlockBorderWrapper"] {
@@ -99,18 +88,17 @@ def launch_game(file_path):
 # --- SIDEBAR ---
 with st.sidebar:
     if st.session_state.stealth_mode:
-        # ONLY SHOWS IN EDUCATIONAL MODE
         st.markdown("### Resources")
         st.caption("• Primary Sources")
         st.caption("• Citation Guide")
         st.caption("• Timeline PDF")
     else:
-        # NOTIFICATIONS SYSTEM
-        st.subheader("📢 UPDATES")
-        for n in NOTIFS:
-            st.markdown(f'<div class="notif-box">{n}</div>', unsafe_allow_html=True)
+        # NOTIFICATION SYSTEM
+        if st.button("🔔 DEVELOPER NOTIFICATIONS"):
+            st.info(get_notif_from_github())
+            st.toast("Updated from Server", icon="✅")
 
-        # SHOWS ONLY IN GAME MODE
+        st.write("---")
         st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING ON YOU, PRESS ALT+F4 OR PRESS THE BUTTON ON THE BOTTOM OF THIS SIDEBAR. THIS MUST BE DONE TO KEEP THIS SITE UP.</div>', unsafe_allow_html=True)
         
         st.title("🛡️ Admin Controls")
@@ -123,7 +111,6 @@ with st.sidebar:
         st.write("---")
         st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold; cursor:pointer;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
 
-    # Invisible spacer to push ghost button to bottom
     for _ in range(25): st.write("")
     
     if st.button(" ", key="ghost_btn"):
@@ -137,7 +124,6 @@ if st.session_state.stealth_mode:
     st.markdown("### Overview\nAnalysing the socio-political shifts of the late 19th century.")
     st.text_area("Research Field", "The industrial shift led to a massive migration toward urban centers...", height=400)
 else:
-    # History Masking
     st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
     
     col1, col2 = st.columns([1, 5])
