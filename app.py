@@ -9,6 +9,8 @@ LATEST_UPDATE = "🚀 50 GAMES LIVE! 300+ coming soon. Remember to stay stealth.
 # 1. SETUP SESSION STATE
 if 'stealth_mode' not in st.session_state:
     st.session_state.stealth_mode = True
+if 'show_notif' not in st.session_state:
+    st.session_state.show_notif = False
 
 # 2. DYNAMIC PAGE CONFIG
 if st.session_state.stealth_mode:
@@ -58,6 +60,12 @@ st.markdown("""
         background: #0f0f0f; border-radius: 16px; border: 1px solid #222; padding: 20px;
     }
     h1, h2, h3, p, span, label { color: #ffffff !important; }
+
+    /* Centering the main header */
+    .centered-header {
+        text-align: center;
+        width: 100%;
+    }
     </style>
 
     <script>
@@ -83,9 +91,13 @@ with st.sidebar:
         st.caption("• Citation Guide")
         st.caption("• Timeline PDF")
     else:
+        # Toggle Notification Logic
         if st.button("🔔 DEVELOPER NOTIFICATIONS"):
+            st.session_state.show_notif = not st.session_state.show_notif
+            st.rerun()
+            
+        if st.session_state.show_notif:
             st.info(f"📢 MESSAGE FROM AN33SH:\n\n{LATEST_UPDATE}")
-            st.toast("Notifications Updated", icon="✅")
 
         st.write("---")
         st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING ON YOU, PRESS ALT+F4 OR PRESS THE BUTTON ON THE BOTTOM.</div>', unsafe_allow_html=True)
@@ -115,21 +127,20 @@ if st.session_state.stealth_mode:
 else:
     st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
     
-    # FIXED ERROR HERE: Added (2)
-    col1, col2 = st.columns(2)
-    with col1:
-        if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
-    with col2:
-        st.title("AN33SH PORTAL 🐦‍🔥")
-        st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. KEEP THE URL BOX BLANK AND NEVER LET A TEACHER SEE THIS SITE.")
-        st.caption("Email me suggestions at alatkaraneesh@gmail.com")
+    # CENTERED LOGO AND HEADER
+    st.markdown('<div class="centered-header">', unsafe_allow_html=True)
+    if os.path.exists("static/slope/an33shlogo.jpg"):
+        st.image("static/slope/an33shlogo.jpg", width=150)
+    st.title("AN33SH PORTAL 🐦‍🔥")
+    st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. KEEP THE URL BOX BLANK AND NEVER LET A TEACHER SEE THIS SITE.")
+    st.caption("Email me suggestions at alatkaraneesh@gmail.com")
+    st.markdown('</div>', unsafe_allow_html=True)
 
     game_dir = "static/slope"
     @st.fragment
     def game_hub():
         if os.path.exists(game_dir): 
             all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
-            # FIXED ERROR HERE: Added (2)
             search_col, page_col = st.columns(2)
             with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
             filtered = [f for f in all_files if query in f.lower()]
