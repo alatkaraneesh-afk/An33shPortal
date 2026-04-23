@@ -32,21 +32,19 @@ st.markdown("""
 
     /* THE GHOST TRIGGER: THIN GRAYISH-BLACK BAR */
     div.stButton > button[key="ghost_btn"] {
-        background-color: #111111 !important; /* Grayish-black */
+        background-color: #111111 !important;
         color: #111111 !important;
         border: none !important;
-        height: 4px !important; /* Very thin like a separator */
+        height: 4px !important;
         width: 100% !important;
         padding: 0px !important;
-        margin-top: 50px !important;
         box-shadow: none !important;
         cursor: default !important;
         outline: none !important;
         min-height: 4px !important;
     }
     div.stButton > button[key="ghost_btn"]:hover {
-        background-color: #1a1a1a !important; /* Subtle glow on hover */
-        border: none !important;
+        background-color: #1a1a1a !important;
     }
 
     /* Game UI Styles */
@@ -62,7 +60,6 @@ st.markdown("""
     </style>
 
     <script>
-    // PANIC KEY: Press Escape to instantly jump to Google Classroom
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             window.location.replace("https://google.com");
@@ -78,14 +75,13 @@ def launch_game(file_path):
     js_code = f"""<script>var t=window.parent||window;var w=t.open("about:blank","_blank");w.document.write(atob("{b64}"));w.document.close();</script>"""
     st.components.v1.html(js_code, height=0)
 
-# --- SIDEBAR (The Ghost Zone) ---
+# --- SIDEBAR ---
 with st.sidebar:
     st.markdown("### Resources")
     st.caption("• Primary Sources")
     st.caption("• Citation Guide")
     st.caption("• Timeline PDF")
     
-    # These only appear when the portal is UNLOCKED
     if not st.session_state.stealth_mode:
         st.write("---")
         if st.button("🎲 FEELING LUCKY?"):
@@ -97,37 +93,35 @@ with st.sidebar:
         st.write("---")
         st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold; cursor:pointer;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
 
-    # Push the ghost button down
     for _ in range(25): st.write("")
     
-    # THE VOID BAR: Looks like a UI separator line
     if st.button(" ", key="ghost_btn"):
         st.session_state.stealth_mode = not st.session_state.stealth_mode
         st.rerun()
 
 # 3. UI LOGIC
 if st.session_state.stealth_mode:
-    # --- STEALTH LANDER ---
     st.title("Unit 4: Global Conflict and Resolution")
     st.info("Draft Status: In Progress | Saved to Cloud")
     st.markdown("### Overview\nAnalysing the socio-political shifts of the late 19th century.")
     st.text_area("Research Field", "The industrial shift led to a massive migration toward urban centers...", height=400)
 else:
-    # --- GAME HUB ---
     st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
-    col1, col2 = st.columns()
+    
+    # FIXED ERROR HERE: Added (2) to st.columns
+    col1, col2 = st.columns(2)
     with col1:
         if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
         st.title("AN33SH PORTAL 🐦‍🔥")
-        st.caption("Your boy noticed IBoss is blocking everything. Hit ESC for Panic.")
+        st.caption("Status: Stealth Mode Active. Hit ESC for Panic.")
 
     game_dir = "static/slope"
     @st.fragment
     def game_hub():
         if os.path.exists(game_dir): 
             all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
-            search_col, page_col = st.columns()
+            search_col, page_col = st.columns(2) # SPECIFIED 2 COLS
             with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
             filtered = [f for f in all_files if query in f.lower()]
             pages = max(1, (len(filtered) // 12) + 1)
