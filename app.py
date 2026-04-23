@@ -7,9 +7,14 @@ import random
 if 'stealth_mode' not in st.session_state:
     st.session_state.stealth_mode = True
 
-# 2. DYNAMIC PAGE CONFIG
+# 2. DYNAMIC PAGE CONFIG (TAB MASKING)
 if st.session_state.stealth_mode:
-    st.set_page_config(page_title="Advanced Calculus - Module 4", page_icon="📝", layout="wide")
+    # Makes the tab look exactly like a Google Doc
+    st.set_page_config(
+        page_title="World History - Project Draft", 
+        page_icon="https://gstatic.com", 
+        layout="wide"
+    )
 else:
     st.set_page_config(page_title="AN33SH PORTAL", page_icon="🐦‍🔥", layout="wide")
 
@@ -41,7 +46,25 @@ st.markdown("""
     h1, h2, h3, p, span, label { color: #ffffff !important; }
     .stCaption { color: #888 !important; }
     .stTextInput>div>div>input { background-color: #111; color: white; border: 1px solid #333; border-radius: 8px; }
+    
+    /* Invisible Secret Button */
+    .secret-btn>div>button {
+        background: transparent !important;
+        border: none !important;
+        color: transparent !important;
+        height: 10px !important;
+        margin-top: -20px !important;
+    }
     </style>
+
+    <script>
+    // PANIC KEY: Press Escape to instantly jump to Google Classroom
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            window.location.replace("https://classroom.google.com");
+        }
+    });
+    </script>
 """, unsafe_allow_html=True)
 
 # LAUNCHER HELPER
@@ -54,28 +77,40 @@ def launch_game(file_path):
 # --- SIDEBAR ---
 with st.sidebar:
     st.title("🛡️ Admin Controls")
-    st.session_state.stealth_mode = st.checkbox("Enable Educational View", value=st.session_state.stealth_mode)
     
+    # Hidden way to relock for the owner
     if not st.session_state.stealth_mode:
-        st.write("---")
-        if st.button("🎲 FEELING LUCKY?"):
-            game_dir = "static/slope"
-            if os.path.exists(game_dir):
-                files = [f for f in os.listdir(game_dir) if f.endswith(".html")]
-                if files: launch_game(os.path.join(game_dir, random.choice(files)))
-    
+        if st.button("🔒 LOCK PORTAL"):
+            st.session_state.stealth_mode = True
+            st.rerun()
+    else:
+        st.write("Educational Mode Active")
+
     st.write("---")
-    st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold; cursor:pointer;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
+    st.markdown('<a href="https://classroom.google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold; cursor:pointer;">⚠️ EMERGENCY EXIT (ESC)</button></a>', unsafe_allow_html=True)
 
 # 3. UI LOGIC
 if st.session_state.stealth_mode:
+    # --- STEALTH LANDER ---
     st.title("Module 4: Differential Equations")
-    st.info("Current Topic: Linear Second-Order Equations with Constant Coefficients")
+    st.info("Draft Status: In Progress | Shared with Class")
     st.markdown("### Overview\nSolving equations of the form: $$ay'' + by' + cy = 0$$")
-    st.image("https://wikimedia.org", caption="Fig 1.2: Sinusoidal Variance")
+    
+    # THE SECRET TRICK
+    # Tell the bros: "Click twice quickly on the image to enter."
+    col_img, col_txt = st.columns([1, 1])
+    with col_img:
+        st.image("https://wikimedia.org", caption="Fig 1.2: Sinusoidal Variance")
+        st.markdown('<div class="secret-btn">', unsafe_allow_html=True)
+        if st.button("⠀", key="secret_trick"): # Invisible button
+            st.session_state.stealth_mode = False
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+    with col_txt:
+        st.text_area("Research Notes:", "The characteristic equation determines the fundamental solution set...", height=250)
+
 else:
-    # --- HISTORY MASKING SCRIPT ---
-    # This rewrites the URL bar to a fake Classroom link to fool teachers/tracking
+    # --- GAME HUB ---
     st.components.v1.html("""
         <script>
         window.history.replaceState({}, '', 'https://google.com');
@@ -87,7 +122,7 @@ else:
         if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
         st.title("AN33SH PORTAL 🐦‍🔥")
-        st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. Remember to turn on educational view when a teacher is spying!")
+        st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. Remember to use the 'ESC' key if a teacher walks by!")
         st.caption("Email me suggestions at alatkaraneesh@gmail.com")
 
     game_dir = "static/slope"
@@ -96,7 +131,6 @@ else:
     def game_hub():
         if os.path.exists(game_dir): 
             all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
-            
             st.subheader("🔥 TRENDING NOW")
             f_cols = st.columns(3)
             featured = ["slopeoffline.html", "fnaf.html", "tinyfishing.html"] 
