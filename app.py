@@ -3,52 +3,169 @@ import os
 import base64
 import random
 
-# --- 1. NOTIFICATION SYSTEM (Reads from File) ---
-NOTIF_FILE = "notifications.txt"
+# --- 0. NOTIFICATIONS (Update these here) ---
+NOTIFS = [
+    "🚀 UPDATE: Added 10+ new games!",
+    "⚠️ REMEMBER: Use the ghost bar for stealth.",
+]
 
-def get_latest_notif():
-    if os.path.exists(NOTIF_FILE):
-        with open(NOTIF_FILE, "r") as f:
-            return f.read()
-    return "No new updates."
-
-def save_notif(text):
-    # This only works if you are running locally or use GitHub API
-    # For a quick fix, you can manually edit notifications.txt on GitHub
-    with open(NOTIF_FILE, "w") as f:
-        f.write(text)
-
-# --- 2. SETUP & UI STYLE ---
+# 1. SETUP SESSION STATE
 if 'stealth_mode' not in st.session_state:
     st.session_state.stealth_mode = True
 
-# [Keep your Page Config and CSS from the previous turn here]
+# 2. DYNAMIC PAGE CONFIG
+if st.session_state.stealth_mode:
+    st.set_page_config(page_title="Advanced Calculus - Module 4", page_icon="📝", layout="wide")
+else:
+    st.set_page_config(page_title="AN33SH PORTAL", page_icon="🐦‍🔥", layout="wide")
 
-# --- 3. SIDEBAR ---
+# --- UI STYLE ---
+st.markdown("""
+    <style>
+    @import url('https://googleapis.com');
+    html, body, [data-testid="stAppViewContainer"] { background-color: #050505; font-family: 'Inter', sans-serif; }
+    #MainMenu {visibility: hidden;} footer {visibility: hidden;}
+    
+    [data-testid="stSidebar"] { 
+        background-color: #000000 !important; 
+        border-right: 1px solid #111;
+    }
+
+    /* THE GHOST TRIGGER BAR */
+    div.stButton > button[key="ghost_btn"] {
+        background-color: #111111 !important;
+        color: #111111 !important;
+        border: none !important;
+        height: 4px !important;
+        width: 100% !important;
+        padding: 0px !important;
+        box-shadow: none !important;
+        cursor: default !important;
+        outline: none !important;
+        min-height: 4px !important;
+    }
+    div.stButton > button[key="ghost_btn"]:hover { background-color: #1a1a1a !important; }
+
+    .stButton>button {
+        width: 100%; border-radius: 12px; height: 3.5em;
+        background: linear-gradient(135deg, #ff4b4b 0%, #a10000 100%);
+        color: white; border: none; font-weight: 900;
+    }
+    
+    /* SPYING WARNING STYLE */
+    .spy-warning {
+        color: #ff4b4b;
+        font-weight: 900;
+        font-size: 14px;
+        text-align: center;
+        border: 2px solid #ff4b4b;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
+
+    /* NOTIFICATION STYLE */
+    .notif-box {
+        background: rgba(255, 75, 75, 0.1);
+        border-left: 4px solid #ff4b4b;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        font-size: 13px;
+    }
+
+    [data-testid="stVerticalBlockBorderWrapper"] {
+        background: #0f0f0f; border-radius: 16px; border: 1px solid #222; padding: 20px;
+    }
+    h1, h2, h3, p, span, label { color: #ffffff !important; }
+    </style>
+
+    <script>
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            window.location.replace("https://google.com");
+        }
+    });
+    </script>
+""", unsafe_allow_html=True)
+
+def launch_game(file_path):
+    with open(file_path, "rb") as f:
+        b64 = base64.b64encode(f.read()).decode()
+    js_code = f"""<script>var t=window.parent||window;var w=t.open("about:blank","_blank");w.document.write(atob("{b64}"));w.document.close();</script>"""
+    st.components.v1.html(js_code, height=0)
+
+# --- SIDEBAR ---
 with st.sidebar:
     if st.session_state.stealth_mode:
+        # ONLY SHOWS IN EDUCATIONAL MODE
         st.markdown("### Resources")
-        # [Keep your Resource Captions here]
+        st.caption("• Primary Sources")
+        st.caption("• Citation Guide")
+        st.caption("• Timeline PDF")
     else:
-        # SHOW THE BROADCAST TO USERS
-        st.markdown("### 📢 SYSTEM BROADCAST")
-        st.info(get_latest_notif())
-        
-        st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING...</div>', unsafe_allow_html=True)
-        
-        # SECRET ADMIN SECTION (Hidden at bottom of Game Sidebar)
-        with st.expander("🛠️ DEV TOOLS"):
-            new_msg = st.text_input("Type Broadcast Message:")
-            if st.button("SEND TO ALL USERS"):
-                # NOTE: Saving to file only works in your local dev or via GitHub Action
-                # To make this live, you'd manually edit notifications.txt in GitHub
-                st.success("Message Prepared! Update notifications.txt in GitHub.")
+        # NOTIFICATIONS SYSTEM
+        st.subheader("📢 UPDATES")
+        for n in NOTIFS:
+            st.markdown(f'<div class="notif-box">{n}</div>', unsafe_allow_html=True)
 
-    # [Keep Ghost Bar logic here]
+        # SHOWS ONLY IN GAME MODE
+        st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING ON YOU, PRESS ALT+F4 OR PRESS THE BUTTON ON THE BOTTOM OF THIS SIDEBAR. THIS MUST BE DONE TO KEEP THIS SITE UP.</div>', unsafe_allow_html=True)
+        
+        st.title("🛡️ Admin Controls")
+        if st.button("🎲 FEELING LUCKY?"):
+            game_dir = "static/slope"
+            if os.path.exists(game_dir):
+                files = [f for f in os.listdir(game_dir) if f.endswith(".html")]
+                if files: launch_game(os.path.join(game_dir, random.choice(files)))
+        
+        st.write("---")
+        st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold; cursor:pointer;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
 
-# --- 4. GAME HUB ---
-if not st.session_state.stealth_mode:
-    # This shows the notification as a "Toast" the second they unlock the portal
-    st.toast(f"BROADCAST: {get_latest_notif()}", icon="📢")
+    # Invisible spacer to push ghost button to bottom
+    for _ in range(25): st.write("")
     
-    # [Keep the rest of your Game Hub code here]
+    if st.button(" ", key="ghost_btn"):
+        st.session_state.stealth_mode = not st.session_state.stealth_mode
+        st.rerun()
+
+# 3. UI LOGIC
+if st.session_state.stealth_mode:
+    st.title("Module 4: Differential Equations")
+    st.info("Current Topic: Linear Second-Order Equations with Constant Coefficients")
+    st.markdown("### Overview\nAnalysing the socio-political shifts of the late 19th century.")
+    st.text_area("Research Field", "The industrial shift led to a massive migration toward urban centers...", height=400)
+else:
+    # History Masking
+    st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
+    
+    col1, col2 = st.columns([1, 5])
+    with col1:
+        if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
+    with col2:
+        st.title("AN33SH PORTAL 🐦‍🔥")
+        st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. KEEP THE URL BOX BLANK AND NEVER LET A TEACHER SEE THIS SITE.")
+        st.caption("Email me suggestions at alatkaraneesh@gmail.com")
+
+    game_dir = "static/slope"
+    @st.fragment
+    def game_hub():
+        if os.path.exists(game_dir): 
+            all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
+            search_col, page_col = st.columns(2)
+            with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
+            filtered = [f for f in all_files if query in f.lower()]
+            pages = max(1, (len(filtered) // 12) + 1)
+            with page_col: page = st.number_input("Page", min_value=1, max_value=pages, step=1)
+            
+            display_list = filtered[(page-1)*12 : page*12]
+            cols = st.columns(3)
+            for i, file_name in enumerate(display_list):
+                display_name = file_name.replace(".html", "").replace("_", " ").title()
+                with cols[i % 3]:
+                    with st.container(border=True):
+                        st.subheader(display_name)
+                        if st.button(f"PLAY", key=f"p_{file_name}"):
+                            launch_game(os.path.join(game_dir, file_name))
+    game_hub()
