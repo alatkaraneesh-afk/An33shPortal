@@ -45,6 +45,20 @@ st.markdown("""
         background: linear-gradient(135deg, #ff4b4b 0%, #a10000 100%);
         color: white; border: none; font-weight: 900;
     }
+    
+    /* SPYING WARNING STYLE */
+    .spy-warning {
+        color: #ff4b4b;
+        font-weight: 900;
+        font-size: 14px;
+        text-align: center;
+        border: 2px solid #ff4b4b;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+    }
+
     [data-testid="stVerticalBlockBorderWrapper"] {
         background: #0f0f0f; border-radius: 16px; border: 1px solid #222; padding: 20px;
     }
@@ -76,6 +90,8 @@ with st.sidebar:
         st.caption("• Timeline PDF")
     else:
         # SHOWS ONLY IN GAME MODE
+        st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING ON YOU, PRESS ALT+F4 OR PRESS THE BUTTON ON THE BOTTOM OF THIS SIDEBAR. THIS MUST BE DONE TO KEEP THIS SITE UP.</div>', unsafe_allow_html=True)
+        
         st.title("🛡️ Admin Controls")
         if st.button("🎲 FEELING LUCKY?"):
             game_dir = "static/slope"
@@ -86,6 +102,7 @@ with st.sidebar:
         st.write("---")
         st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold; cursor:pointer;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
 
+    # Invisible spacer to push ghost button to bottom
     for _ in range(25): st.write("")
     
     if st.button(" ", key="ghost_btn"):
@@ -99,13 +116,13 @@ if st.session_state.stealth_mode:
     st.markdown("### Overview\nAnalysing the socio-political shifts of the late 19th century.")
     st.text_area("Research Field", "The industrial shift led to a massive migration toward urban centers...", height=400)
 else:
+    # History Masking
     st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
     
     col1, col2 = st.columns([1, 5])
     with col1:
         if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
-        # BACK TO ORIGINAL CAPTIONS
         st.title("AN33SH PORTAL 🐦‍🔥")
         st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. Remember to turn on educational view when a teacher is spying!")
         st.caption("Email me suggestions at alatkaraneesh@gmail.com")
