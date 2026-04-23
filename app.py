@@ -2,32 +2,10 @@ import streamlit as st
 import os
 import base64
 import random
-import requests
 
-# --- 0. NOTIFICATION HELPER ---
-# --- 0. NOTIFICATION HELPER ---
-def get_notif_from_github():
-    try:
-        # We add a random number to the end (?v=...) to force it to bypass cache
-        # This helps make sure the bros get the NEWEST message instantly
-        import random
-        v = random.randint(1, 1000)
-        
-        # EXACT LINK to your GitHub file
-        url = f"https://githubusercontent.com{v}"
-        
-        # Using a browser-like User Agent to sneak past the filter
-        headers = {'User-Agent': 'Mozilla/5.0'}
-        response = requests.get(url, headers=headers, timeout=5)
-        
-        if response.status_code == 200:
-            return response.text
-        else:
-            return f"System busy (Error {response.status_code}). Check back in a bit!"
-    except Exception as e:
-        # If it still fails, it's definitely the school's filter blocking GitHub Raw
-        return "⚠️ iBoss is blocking the update server. Join the Discord for news!"
-
+# --- 0. DEVELOPER NOTIFICATION (CHANGE TEXT HERE) ---
+# Just update this text on GitHub to send a message to all users!
+LATEST_UPDATE = "🚀 50 GAMES LIVE! 300+ coming soon. Remember to stay stealth. - An33sh"
 
 # 1. SETUP SESSION STATE
 if 'stealth_mode' not in st.session_state:
@@ -106,13 +84,13 @@ with st.sidebar:
         st.caption("• Citation Guide")
         st.caption("• Timeline PDF")
     else:
-        # NOTIFICATION SYSTEM
+        # MANUAL NOTIFICATION BUTTON
         if st.button("🔔 DEVELOPER NOTIFICATIONS"):
-            st.info(get_notif_from_github())
-            st.toast("Updated from Server", icon="✅")
+            st.info(f"📢 MESSAGE FROM AN33SH:\n\n{LATEST_UPDATE}")
+            st.toast("Notifications Updated", icon="✅")
 
         st.write("---")
-        st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING ON YOU, PRESS ALT+F4 OR PRESS THE BUTTON ON THE BOTTOM OF THIS SIDEBAR. THIS MUST BE DONE TO KEEP THIS SITE UP.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING ON YOU, PRESS ALT+F4 OR PRESS THE BUTTON ON THE BOTTOM.</div>', unsafe_allow_html=True)
         
         st.title("🛡️ Admin Controls")
         if st.button("🎲 FEELING LUCKY?"):
@@ -139,7 +117,7 @@ if st.session_state.stealth_mode:
 else:
     st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
     
-    col1, col2 = st.columns([1, 5])
+    col1, col2 = st.columns()
     with col1:
         if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
