@@ -25,19 +25,23 @@ st.markdown("""
     #MainMenu {visibility: hidden;} footer {visibility: hidden;}
     [data-testid="stSidebar"] { background-color: #0a0a0a; border-right: 1px solid #ff4b4b33; }
 
-    /* The Secret Ghost Button Style */
-    .ghost-trigger>div>button {
-        background: #0a0a0a !important;
-        border: 1px solid #0a0a0a !important;
+    /* THE GHOST TRIGGER: Fully black, no border, no text, no hover */
+    div.stButton > button[key^="ghost_btn"] {
+        background-color: #0a0a0a !important;
         color: #0a0a0a !important;
-        height: 50px !important;
-        width: 50px !important;
-        margin-top: 100px !important;
+        border: none !important;
+        height: 60px !important;
+        width: 100% !important;
+        box-shadow: none !important;
         cursor: default !important;
     }
-    .ghost-trigger>div>button:active, .ghost-trigger>div>button:focus {
-        box-shadow: none !important;
-        outline: none !important;
+    div.stButton > button[key^="ghost_btn"]:hover {
+        background-color: #0a0a0a !important;
+        color: #0a0a0a !important;
+    }
+    div.stButton > button[key^="ghost_btn"]:active {
+        background-color: #0a0a0a !important;
+        border: none !important;
     }
 
     /* Game UI Styles */
@@ -72,18 +76,17 @@ def launch_game(file_path):
 # --- SIDEBAR (The Ghost Zone) ---
 with st.sidebar:
     st.markdown("### Resources")
-    st.caption("• Primary Sources\n• Citation Guide\n• Timeline PDF")
+    st.caption("• Primary Sources")
+    st.caption("• Citation Guide")
+    st.caption("• Timeline PDF")
     
-    # Large gap to push the trigger to the bottom
-    for _ in range(15): st.write("")
+    # Push the trigger to the absolute bottom
+    for _ in range(20): st.write("")
     
-    # THE SECRET BLACK IMAGE TRIGGER
-    st.markdown('<div class="ghost-trigger">', unsafe_allow_html=True)
-    if st.button("⬛", key="ghost_btn"):
-        # This toggles mode. To the user, it just looks like clicking a dead square.
+    # THE VOID BUTTON: Totally black, matches sidebar background
+    if st.button(" ", key="ghost_btn"):
         st.session_state.stealth_mode = not st.session_state.stealth_mode
         st.rerun()
-    st.markdown('</div>', unsafe_allow_html=True)
 
 # 3. UI LOGIC
 if st.session_state.stealth_mode:
@@ -91,7 +94,7 @@ if st.session_state.stealth_mode:
     st.title("Unit 4: Global Conflict and Resolution")
     st.info("Draft Status: In Progress | Saved to Cloud")
     st.markdown("### Overview\nAnalysing the socio-political shifts of the late 19th century.")
-    st.text_area("Research Field", "Enter observations here...", height=400)
+    st.text_area("Research Field", "The Treaty of Versailles served as a primary catalyst for the geopolitical restructuring of Europe...", height=400)
 else:
     # --- GAME HUB ---
     st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
@@ -107,7 +110,7 @@ else:
     def game_hub():
         if os.path.exists(game_dir): 
             all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
-            search_col, page_col = st.columns([3,1])
+            search_col, page_col = st.columns([3, 1])
             with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
             filtered = [f for f in all_files if query in f.lower()]
             pages = max(1, (len(filtered) // 12) + 1)
