@@ -4,7 +4,6 @@ import base64
 import random
 
 # --- 0. DEVELOPER NOTIFICATION (CHANGE TEXT HERE) ---
-# Just update this text on GitHub to send a message to all users!
 LATEST_UPDATE = "🚀 50 GAMES LIVE! 300+ coming soon. Remember to stay stealth. - An33sh"
 
 # 1. SETUP SESSION STATE
@@ -84,7 +83,6 @@ with st.sidebar:
         st.caption("• Citation Guide")
         st.caption("• Timeline PDF")
     else:
-        # MANUAL NOTIFICATION BUTTON
         if st.button("🔔 DEVELOPER NOTIFICATIONS"):
             st.info(f"📢 MESSAGE FROM AN33SH:\n\n{LATEST_UPDATE}")
             st.toast("Notifications Updated", icon="✅")
@@ -117,7 +115,8 @@ if st.session_state.stealth_mode:
 else:
     st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
     
-    col1, col2 = st.columns()
+    # FIXED ERROR HERE: Added (2)
+    col1, col2 = st.columns(2)
     with col1:
         if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
@@ -130,6 +129,7 @@ else:
     def game_hub():
         if os.path.exists(game_dir): 
             all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
+            # FIXED ERROR HERE: Added (2)
             search_col, page_col = st.columns(2)
             with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
             filtered = [f for f in all_files if query in f.lower()]
