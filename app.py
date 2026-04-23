@@ -30,24 +30,23 @@ st.markdown("""
         border-right: 1px solid #111;
     }
 
-    /* THE GHOST TRIGGER: PITCH BLACK */
+    /* THE GHOST TRIGGER: THIN GRAYISH-BLACK BAR */
     div.stButton > button[key="ghost_btn"] {
-        background-color: #000000 !important;
-        color: #000000 !important;
+        background-color: #111111 !important; /* Grayish-black */
+        color: #111111 !important;
         border: none !important;
-        height: 100px !important;
+        height: 4px !important; /* Very thin like a separator */
         width: 100% !important;
+        padding: 0px !important;
+        margin-top: 50px !important;
         box-shadow: none !important;
         cursor: default !important;
         outline: none !important;
+        min-height: 4px !important;
     }
-    div.stButton > button[key="ghost_btn"]:hover, 
-    div.stButton > button[key="ghost_btn"]:active, 
-    div.stButton > button[key="ghost_btn"]:focus {
-        background-color: #000000 !important;
-        color: #000000 !important;
+    div.stButton > button[key="ghost_btn"]:hover {
+        background-color: #1a1a1a !important; /* Subtle glow on hover */
         border: none !important;
-        box-shadow: none !important;
     }
 
     /* Game UI Styles */
@@ -98,10 +97,10 @@ with st.sidebar:
         st.write("---")
         st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold; cursor:pointer;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
 
-    # Push the ghost button to the very bottom
+    # Push the ghost button down
     for _ in range(25): st.write("")
     
-    # THE VOID BUTTON: Totally black, matches sidebar background
+    # THE VOID BAR: Looks like a UI separator line
     if st.button(" ", key="ghost_btn"):
         st.session_state.stealth_mode = not st.session_state.stealth_mode
         st.rerun()
@@ -116,7 +115,7 @@ if st.session_state.stealth_mode:
 else:
     # --- GAME HUB ---
     st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
-    col1, col2 = st.columns([1, 5])
+    col1, col2 = st.columns()
     with col1:
         if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
@@ -128,7 +127,7 @@ else:
     def game_hub():
         if os.path.exists(game_dir): 
             all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
-            search_col, page_col = st.columns([3, 1])
+            search_col, page_col = st.columns()
             with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
             filtered = [f for f in all_files if query in f.lower()]
             pages = max(1, (len(filtered) // 12) + 1)
