@@ -23,25 +23,31 @@ st.markdown("""
     @import url('https://googleapis.com');
     html, body, [data-testid="stAppViewContainer"] { background-color: #050505; font-family: 'Inter', sans-serif; }
     #MainMenu {visibility: hidden;} footer {visibility: hidden;}
-    [data-testid="stSidebar"] { background-color: #0a0a0a; border-right: 1px solid #ff4b4b33; }
+    
+    /* SIDEBAR COLOR */
+    [data-testid="stSidebar"] { 
+        background-color: #000000 !important; 
+        border-right: 1px solid #111;
+    }
 
-    /* THE GHOST TRIGGER: Fully black, no border, no text, no hover */
-    div.stButton > button[key^="ghost_btn"] {
-        background-color: #0a0a0a !important;
-        color: #0a0a0a !important;
+    /* THE GHOST TRIGGER: PITCH BLACK */
+    div.stButton > button[key="ghost_btn"] {
+        background-color: #000000 !important;
+        color: #000000 !important;
         border: none !important;
-        height: 60px !important;
+        height: 100px !important;
         width: 100% !important;
         box-shadow: none !important;
         cursor: default !important;
+        outline: none !important;
     }
-    div.stButton > button[key^="ghost_btn"]:hover {
-        background-color: #0a0a0a !important;
-        color: #0a0a0a !important;
-    }
-    div.stButton > button[key^="ghost_btn"]:active {
-        background-color: #0a0a0a !important;
+    div.stButton > button[key="ghost_btn"]:hover, 
+    div.stButton > button[key="ghost_btn"]:active, 
+    div.stButton > button[key="ghost_btn"]:focus {
+        background-color: #000000 !important;
+        color: #000000 !important;
         border: none !important;
+        box-shadow: none !important;
     }
 
     /* Game UI Styles */
@@ -80,8 +86,20 @@ with st.sidebar:
     st.caption("• Citation Guide")
     st.caption("• Timeline PDF")
     
-    # Push the trigger to the absolute bottom
-    for _ in range(20): st.write("")
+    # These only appear when the portal is UNLOCKED
+    if not st.session_state.stealth_mode:
+        st.write("---")
+        if st.button("🎲 FEELING LUCKY?"):
+            game_dir = "static/slope"
+            if os.path.exists(game_dir):
+                files = [f for f in os.listdir(game_dir) if f.endswith(".html")]
+                if files: launch_game(os.path.join(game_dir, random.choice(files)))
+        
+        st.write("---")
+        st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold; cursor:pointer;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
+
+    # Push the ghost button to the very bottom
+    for _ in range(25): st.write("")
     
     # THE VOID BUTTON: Totally black, matches sidebar background
     if st.button(" ", key="ghost_btn"):
@@ -94,7 +112,7 @@ if st.session_state.stealth_mode:
     st.title("Unit 4: Global Conflict and Resolution")
     st.info("Draft Status: In Progress | Saved to Cloud")
     st.markdown("### Overview\nAnalysing the socio-political shifts of the late 19th century.")
-    st.text_area("Research Field", "The Treaty of Versailles served as a primary catalyst for the geopolitical restructuring of Europe...", height=400)
+    st.text_area("Research Field", "The industrial shift led to a massive migration toward urban centers...", height=400)
 else:
     # --- GAME HUB ---
     st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
@@ -103,7 +121,7 @@ else:
         if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
         st.title("AN33SH PORTAL 🐦‍🔥")
-        st.caption("Status: Stealth Mode Active. Hit ESC for Panic.")
+        st.caption("Your boy noticed IBoss is blocking everything. Hit ESC for Panic.")
 
     game_dir = "static/slope"
     @st.fragment
