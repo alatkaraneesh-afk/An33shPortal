@@ -133,7 +133,7 @@ else:
         st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. KEEP THE URL BOX BLANK AND NEVER LET A TEACHER SEE THIS SITE.")
-    st.caption("Email me suggestions at alatkaraneesh@gmail.com")
+    st.caption("SUGGESTIONS: https://docs.google.com/forms/d/e/1FAIpQLSeMT7Ty9wa4yjAFIDdilg6tlS0a93tY8trDL-KcDYhfcFHkYw/viewform?usp=publish-editor")
     st.markdown('</div>', unsafe_allow_html=True)
 
     game_dir = "static/slope"
