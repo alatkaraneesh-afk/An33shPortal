@@ -7,30 +7,25 @@ import random
 if 'stealth_mode' not in st.session_state:
     st.session_state.stealth_mode = True
 
-# 2. DYNAMIC PAGE CONFIG (TAB MASKING)
+# 2. DYNAMIC PAGE CONFIG
 if st.session_state.stealth_mode:
-    st.set_page_config(
-        page_title="World History - Project Draft", 
-        page_icon="https://gstatic.com", 
-        layout="wide"
-    )
+    st.set_page_config(page_title="Advanced Calculus - Module 4", page_icon="📝", layout="wide")
 else:
     st.set_page_config(page_title="AN33SH PORTAL", page_icon="🐦‍🔥", layout="wide")
 
-# --- UI STYLE UPGRADE ---
+# --- UI STYLE ---
 st.markdown("""
     <style>
     @import url('https://googleapis.com');
     html, body, [data-testid="stAppViewContainer"] { background-color: #050505; font-family: 'Inter', sans-serif; }
     #MainMenu {visibility: hidden;} footer {visibility: hidden;}
     
-    /* SIDEBAR COLOR */
     [data-testid="stSidebar"] { 
         background-color: #000000 !important; 
         border-right: 1px solid #111;
     }
 
-    /* THE GHOST TRIGGER: THIN GRAYISH-BLACK BAR */
+    /* THE GHOST TRIGGER BAR */
     div.stButton > button[key="ghost_btn"] {
         background-color: #111111 !important;
         color: #111111 !important;
@@ -43,11 +38,8 @@ st.markdown("""
         outline: none !important;
         min-height: 4px !important;
     }
-    div.stButton > button[key="ghost_btn"]:hover {
-        background-color: #1a1a1a !important;
-    }
+    div.stButton > button[key="ghost_btn"]:hover { background-color: #1a1a1a !important; }
 
-    /* Game UI Styles */
     .stButton>button {
         width: 100%; border-radius: 12px; height: 3.5em;
         background: linear-gradient(135deg, #ff4b4b 0%, #a10000 100%);
@@ -68,7 +60,6 @@ st.markdown("""
     </script>
 """, unsafe_allow_html=True)
 
-# LAUNCHER HELPER
 def launch_game(file_path):
     with open(file_path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode()
@@ -77,13 +68,15 @@ def launch_game(file_path):
 
 # --- SIDEBAR ---
 with st.sidebar:
-    st.markdown("### Resources")
-    st.caption("• Primary Sources")
-    st.caption("• Citation Guide")
-    st.caption("• Timeline PDF")
-    
-    if not st.session_state.stealth_mode:
-        st.write("---")
+    if st.session_state.stealth_mode:
+        # ONLY SHOWS IN EDUCATIONAL MODE
+        st.markdown("### Resources")
+        st.caption("• Primary Sources")
+        st.caption("• Citation Guide")
+        st.caption("• Timeline PDF")
+    else:
+        # SHOWS ONLY IN GAME MODE
+        st.title("🛡️ Admin Controls")
         if st.button("🎲 FEELING LUCKY?"):
             game_dir = "static/slope"
             if os.path.exists(game_dir):
@@ -101,27 +94,28 @@ with st.sidebar:
 
 # 3. UI LOGIC
 if st.session_state.stealth_mode:
-    st.title("Unit 4: Global Conflict and Resolution")
-    st.info("Draft Status: In Progress | Saved to Cloud")
+    st.title("Module 4: Differential Equations")
+    st.info("Current Topic: Linear Second-Order Equations with Constant Coefficients")
     st.markdown("### Overview\nAnalysing the socio-political shifts of the late 19th century.")
     st.text_area("Research Field", "The industrial shift led to a massive migration toward urban centers...", height=400)
 else:
     st.components.v1.html("<script>window.history.replaceState({}, '', 'https://google.com');</script>", height=0)
     
-    # FIXED ERROR HERE: Added (2) to st.columns
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([1, 5])
     with col1:
         if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=100)
     with col2:
+        # BACK TO ORIGINAL CAPTIONS
         st.title("AN33SH PORTAL 🐦‍🔥")
-        st.caption("Status: Stealth Mode Active. Hit ESC for Panic.")
+        st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. Remember to turn on educational view when a teacher is spying!")
+        st.caption("Email me suggestions at alatkaraneesh@gmail.com")
 
     game_dir = "static/slope"
     @st.fragment
     def game_hub():
         if os.path.exists(game_dir): 
             all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
-            search_col, page_col = st.columns(2) # SPECIFIED 2 COLS
+            search_col, page_col = st.columns(2)
             with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
             filtered = [f for f in all_files if query in f.lower()]
             pages = max(1, (len(filtered) // 12) + 1)
