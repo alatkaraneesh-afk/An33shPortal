@@ -90,7 +90,7 @@ st.markdown("""
         border-radius: 10px !important;
     }
 
-    /* FIXED POPUP NOTIFICATION - CLEARS URL BAR */
+    /* Popup Blocked Alert Style */
     #popup-alert {
         display: none;
         position: fixed;
@@ -108,6 +108,22 @@ st.markdown("""
         text-align: center;
         min-width: 320px;
         text-transform: uppercase;
+    }
+
+    /* Coming Soon Glow */
+    .coming-soon-box {
+        border: 2px dashed #444;
+        padding: 50px;
+        text-align: center;
+        border-radius: 20px;
+        background: rgba(255,255,255,0.02);
+    }
+    .coming-soon-text {
+        font-family: 'JetBrains Mono', monospace;
+        color: #ff4b4b;
+        font-size: 24px;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(255, 75, 75, 0.5);
     }
     </style>
 
@@ -187,28 +203,44 @@ else:
         st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. KEEP THE URL BOX BLANK AND NEVER LET A TEACHER SEE THIS SITE.")
-    st.caption("SUGGESTIONS: https://forms.gle/32uS6xmQuGyHP6Hi8")
+    st.caption("SUGGESTIONS: https://forms.gle")
     st.markdown('</div>', unsafe_allow_html=True)
 
-    game_dir = "static/slope"
-    @st.fragment
-    def game_hub():
-        if os.path.exists(game_dir): 
-            all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
-            search_col, page_col = st.columns(2)
-            with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
-            filtered = [f for f in all_files if query in f.lower()]
-            pages = max(1, (len(filtered) // 12) + 1)
-            with page_col: page = st.number_input("Page", min_value=1, max_value=pages, step=1)
-            
-            st.write("---")
-            display_list = filtered[(page-1)*12 : page*12]
-            cols = st.columns(3)
-            for i, file_name in enumerate(display_list):
-                display_name = file_name.replace(".html", "").replace("_", " ").title()
-                with cols[i % 3]:
-                    with st.container(border=True):
-                        st.subheader(display_name)
-                        if st.button(f"PLAY", key=f"p_{file_name}"):
-                            launch_game(os.path.join(game_dir, file_name))
-    game_hub()
+    # GAME HUB WITH PROXY TAB
+    tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY (BETA)"])
+
+    with tab1:
+        game_dir = "static/slope"
+        @st.fragment
+        def game_hub():
+            if os.path.exists(game_dir): 
+                all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
+                search_col, page_col = st.columns(2)
+                with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
+                filtered = [f for f in all_files if query in f.lower()]
+                pages = max(1, (len(filtered) // 12) + 1)
+                with page_col: page = st.number_input("Page", min_value=1, max_value=pages, step=1)
+                
+                st.write("---")
+                display_list = filtered[(page-1)*12 : page*12]
+                cols = st.columns(3)
+                for i, file_name in enumerate(display_list):
+                    display_name = file_name.replace(".html", "").replace("_", " ").title()
+                    with cols[i % 3]:
+                        with st.container(border=True):
+                            st.subheader(display_name)
+                            if st.button(f"PLAY", key=f"p_{file_name}"):
+                                launch_game(os.path.join(game_dir, file_name))
+        game_hub()
+
+    with tab2:
+        st.write("")
+        st.markdown("""
+            <div class="coming-soon-box">
+                <div class="coming-soon-text">⚡ ULTRA-STEALTH PROXY ⚡</div>
+                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed Filters...</p>
+                <h2 style="color: white; margin-top: 30px;">STATUS: <span style="color: #ff4b4b;">COMING SOON</span></h2>
+                <p style="color: #555;">An33sh is working on the backend. Stay tuned.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        st.text_input("Enter URL to Unblock", placeholder="https://youtube.com...", disabled=True)
