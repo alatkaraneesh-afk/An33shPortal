@@ -7,6 +7,8 @@ import random
 LATEST_UPDATE = "Hiiiiii my cutie pies ;)-An33sh"
 
 # --- SAFETY FEATURE: EMERGENCY KILL SWITCH ---
+# Set this to True if you suspect an admin is watching the site. 
+# It will instantly force everyone to Google.
 KILL_SWITCH = False 
 
 if KILL_SWITCH:
@@ -117,24 +119,25 @@ st.markdown("""
     }
 
     .coming-soon-box {
-        border: 1px solid #333;
-        padding: 30px;
+        border: 2px dashed #444;
+        padding: 50px;
         text-align: center;
         border-radius: 20px;
         background: rgba(255,255,255,0.02);
-        margin-bottom: 20px;
     }
     .coming-soon-text {
         font-family: 'JetBrains Mono', monospace;
         color: #ff4b4b;
-        font-size: 20px;
+        font-size: 24px;
         font-weight: bold;
+        text-shadow: 0 0 10px rgba(255, 75, 75, 0.5);
     }
     </style>
 
     <div id="popup-alert">⚠️ POPUP BLOCKED! Enable popups in your browser address bar to play.</div>
 
     <script>
+    // SAFETY FEATURE: TAB CLOAKING FOR MAIN SITE
     window.parent.document.title = "Advanced Calculus - Module 4";
     var link = window.parent.document.querySelector("link[rel*='icon']") || window.parent.document.createElement('link');
     link.type = 'image/x-icon';
@@ -151,6 +154,9 @@ st.markdown("""
 def launch_game(file_path):
     with open(file_path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode()
+    
+    # SAFETY FEATURE: URL MASKING & TAB CLOAKING
+    # Opens game in 'about:blank' so the address bar doesn't show file names.
     js_code = f"""
     <script>
     var t = window.parent || window;
@@ -164,7 +170,8 @@ def launch_game(file_path):
         var link = w.document.createElement('link');
         link.rel = 'icon';
         link.href = 'https://gstatic.com';
-        w.document.getElementsByTagName('head').appendChild(link);
+        w.document.getElementsByTagName('head')[0].appendChild(link);
+        
         w.document.write(atob("{b64}"));
         w.document.close();
     }}
@@ -217,77 +224,4 @@ else:
     
     st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
     if os.path.exists("static/slope/an33shlogo.jpg"):
-        st.image("static/slope/an33shlogo.jpg", width=150)
-    st.title("AN33SH PORTAL 🐦‍🔥")
-    st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games.")
-    st.caption("SUGGESTIONS: https://forms.gle/CRHS5EptW7AywDVX8")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-    # GAME HUB & FUNCTIONAL PROXY
-    tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY (BETA)"])
-
-    with tab1:
-        game_dir = "static/slope"
-        @st.fragment
-        def game_hub():
-            if os.path.exists(game_dir): 
-                all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
-                search_col, page_col = st.columns(2)
-                with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
-                filtered = [f for f in all_files if query in f.lower()]
-                pages = max(1, (len(filtered) // 12) + 1)
-                with page_col: page = st.number_input("Page", min_value=1, max_value=pages, step=1)
-                
-                st.write("---")
-                display_list = filtered[(page-1)*12 : page*12]
-                cols = st.columns(3)
-                for i, file_name in enumerate(display_list):
-                    display_name = file_name.replace(".html", "").replace("_", " ").title()
-                    with cols[i % 3]:
-                        with st.container(border=True):
-                            st.subheader(display_name)
-                            if st.button(f"PLAY", key=f"p_{file_name}"):
-                                launch_game(os.path.join(game_dir, file_name))
-        game_hub()
-
-    with tab2:
-        st.write("")
-        st.markdown("""
-            <div class="coming-soon-box">
-                <div class="coming-soon-text">⚡ ULTRA-STEALTH PROXY ⚡</div>
-                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed...</p>
-                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin: 20px 0; border: 1px solid #333;">
-                    <iframe src="https://duckduckgo.com" 
-                            style="overflow:hidden;margin:0;padding:0;width:100%;height:45px;" 
-                            frameborder="0">
-                    </iframe>
-                </div>
-                <h3 style="color: white;">BACKEND STATUS: <span style="color: #00ff00;">ONLINE & SECURE</span></h3>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        target_site = st.text_input("Enter URL to Unblock", placeholder="e.g. youtube.com")
-        
-        if st.button("🚀 ESTABLISH DRIVE TUNNEL"):
-            if target_site:
-                clean_url = target_site.replace("https://", "").replace("http://", "")
-                # USE GOOGLE DRIVE VIEWER AS THE BRIDGE (harder to block than Translate)
-                final_proxy = f"https://google.com{clean_url}&embedded=true"
-                
-                st.info("Establishing secure tunnel via Google Drive backbone...")
-                
-                js = f"""
-                <script>
-                var w = window.open('{final_proxy}', '_blank');
-                if (w) {{
-                    w.document.title = "Google Drive - Shared PDF";
-                    var link = w.document.createElement('link');
-                    link.rel = 'icon';
-                    link.href = 'https://gstatic.com';
-                    w.document.getElementsByTagName('head').appendChild(link);
-                }}
-                </script>
-                """
-                st.components.v1.html(js, height=0)
-            else:
-                st.warning("Please enter a destination URL.")
+        st.im
