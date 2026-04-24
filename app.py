@@ -220,7 +220,7 @@ else:
         st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games.")
-    st.caption("SUGGESTIONS: https://forms.gle")
+    st.caption("SUGGESTIONS: https://forms.gle/YL2CktZNfCZo7Bsb9")
     st.markdown('</div>', unsafe_allow_html=True)
 
     tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY (BETA)"])
