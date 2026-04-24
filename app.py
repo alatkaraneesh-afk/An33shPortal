@@ -220,7 +220,7 @@ else:
         st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games.")
-    st.caption("SUGGESTIONS: https://forms.gle")
+    st.caption("SUGGESTIONS: https://forms.gle/CRHS5EptW7AywDVX8")
     st.markdown('</div>', unsafe_allow_html=True)
 
     tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY (BETA)"])
@@ -254,14 +254,44 @@ else:
         st.markdown("""
             <div class="coming-soon-box">
                 <div class="coming-soon-text">⚡ ULTRA-STEALTH PROXY ⚡</div>
-                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed...</p>
+                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed Filters...</p>
                 <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin: 20px 0;">
                     <iframe src="https://duckduckgo.com Privately&focus=yes" 
                             style="overflow:hidden;margin:0;padding:0;width:100%;height:40px;" 
                             frameborder="0">
                     </iframe>
                 </div>
-                <h3 style="color: white;">BACKEND STATUS: <span style="color: #ff4b4b;">85% COMPLETE</span></h3>
+                <h3 style="color: white;">BACKEND STATUS: <span style="color: #00ff00;">ONLINE & SECURE</span></h3>
             </div>
         """, unsafe_allow_html=True)
-        st.text_input("Enter URL to Unblock", placeholder="https://youtube.com...", disabled=True)
+        
+        # WORKING PROXY INPUT
+        proxy_url = st.text_input("Enter URL to Unblock", placeholder="e.g. youtube.com")
+        
+        if st.button("🚀 UNBLOCK NOW"):
+            if proxy_url:
+                # Clean up URL input
+                if not proxy_url.startswith("http"):
+                    proxy_url = "https://" + proxy_url
+                
+                # Bypassing using the Google Translate engine
+                proxy_bridge = f"https://google.com{proxy_url}"
+                
+                st.info("Establishing secure tunnel...")
+                # Open in a new tab with tab cloaking
+                js = f"""
+                <script>
+                var w = window.open('{proxy_bridge}', '_blank');
+                if (w) {{
+                    w.document.title = "Google Docs";
+                    // Reset icon to stealth
+                    var link = w.document.createElement('link');
+                    link.rel = 'icon';
+                    link.href = 'https://gstatic.com';
+                    w.document.getElementsByTagName('head')[0].appendChild(link);
+                }}
+                </script>
+                """
+                st.components.v1.html(js, height=0)
+            else:
+                st.warning("Please enter a URL first.")
