@@ -164,7 +164,7 @@ def launch_game(file_path):
         var link = w.document.createElement('link');
         link.rel = 'icon';
         link.href = 'https://gstatic.com';
-        w.document.getElementsByTagName('head')[0].appendChild(link);
+        w.document.getElementsByTagName('head').appendChild(link);
         w.document.write(atob("{b64}"));
         w.document.close();
     }}
@@ -223,6 +223,7 @@ else:
     st.caption("SUGGESTIONS: https://forms.gle/CRHS5EptW7AywDVX8")
     st.markdown('</div>', unsafe_allow_html=True)
 
+    # GAME HUB & FUNCTIONAL PROXY
     tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY (BETA)"])
 
     with tab1:
@@ -254,10 +255,10 @@ else:
         st.markdown("""
             <div class="coming-soon-box">
                 <div class="coming-soon-text">⚡ ULTRA-STEALTH PROXY ⚡</div>
-                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed Filters...</p>
-                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin: 20px 0;">
-                    <iframe src="https://duckduckgo.com Privately&focus=yes" 
-                            style="overflow:hidden;margin:0;padding:0;width:100%;height:40px;" 
+                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed...</p>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin: 20px 0; border: 1px solid #333;">
+                    <iframe src="https://duckduckgo.com" 
+                            style="overflow:hidden;margin:0;padding:0;width:100%;height:45px;" 
                             frameborder="0">
                     </iframe>
                 </div>
@@ -265,33 +266,28 @@ else:
             </div>
         """, unsafe_allow_html=True)
         
-        # WORKING PROXY INPUT
-        proxy_url = st.text_input("Enter URL to Unblock", placeholder="e.g. youtube.com")
+        target_site = st.text_input("Enter URL to Unblock", placeholder="e.g. youtube.com")
         
-        if st.button("🚀 UNBLOCK NOW"):
-            if proxy_url:
-                # Clean up URL input
-                if not proxy_url.startswith("http"):
-                    proxy_url = "https://" + proxy_url
+        if st.button("🚀 ESTABLISH DRIVE TUNNEL"):
+            if target_site:
+                clean_url = target_site.replace("https://", "").replace("http://", "")
+                # USE GOOGLE DRIVE VIEWER AS THE BRIDGE (harder to block than Translate)
+                final_proxy = f"https://google.com{clean_url}&embedded=true"
                 
-                # Bypassing using the Google Translate engine
-                proxy_bridge = f"https://google.com{proxy_url}"
+                st.info("Establishing secure tunnel via Google Drive backbone...")
                 
-                st.info("Establishing secure tunnel...")
-                # Open in a new tab with tab cloaking
                 js = f"""
                 <script>
-                var w = window.open('{proxy_bridge}', '_blank');
+                var w = window.open('{final_proxy}', '_blank');
                 if (w) {{
-                    w.document.title = "Google Docs";
-                    // Reset icon to stealth
+                    w.document.title = "Google Drive - Shared PDF";
                     var link = w.document.createElement('link');
                     link.rel = 'icon';
                     link.href = 'https://gstatic.com';
-                    w.document.getElementsByTagName('head')[0].appendChild(link);
+                    w.document.getElementsByTagName('head').appendChild(link);
                 }}
                 </script>
                 """
                 st.components.v1.html(js, height=0)
             else:
-                st.warning("Please enter a URL first.")
+                st.warning("Please enter a destination URL.")
