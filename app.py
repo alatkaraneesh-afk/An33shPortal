@@ -90,22 +90,24 @@ st.markdown("""
         border-radius: 10px !important;
     }
 
-    /* Popup Blocked Alert Style */
+    /* FIXED POPUP NOTIFICATION - CLEARS URL BAR */
     #popup-alert {
         display: none;
         position: fixed;
-        top: 20px;
+        top: 100px;
         left: 50%;
         transform: translateX(-50%);
-        z-index: 9999;
-        background: #ff4b4b;
+        z-index: 1000000 !important;
+        background: linear-gradient(90deg, #ff4b4b, #a10000);
         color: white;
-        padding: 15px 25px;
-        border-radius: 50px;
-        font-weight: bold;
-        box-shadow: 0 0 20px rgba(255, 75, 75, 0.6);
+        padding: 18px 30px;
+        border-radius: 15px;
+        font-weight: 900;
+        box-shadow: 0 10px 30px rgba(255, 75, 75, 0.8);
         border: 2px solid white;
         text-align: center;
+        min-width: 320px;
+        text-transform: uppercase;
     }
     </style>
 
@@ -126,7 +128,6 @@ def launch_game(file_path):
     var t = window.parent || window;
     var w = t.open("about:blank", "_blank");
     if (!w || w.closed || typeof w.closed == 'undefined') {{
-        // Show alert if popup is blocked
         var alertBox = t.document.getElementById('popup-alert');
         alertBox.style.display = 'block';
         setTimeout(function() {{ alertBox.style.display = 'none'; }}, 6000);
