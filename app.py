@@ -6,6 +6,15 @@ import random
 # --- 0. DEVELOPER NOTIFICATION ---
 LATEST_UPDATE = "Hiiiiii my cutie pies ;)-An33sh"
 
+# --- SAFETY FEATURE: EMERGENCY KILL SWITCH ---
+# Set this to True if you suspect an admin is watching the site. 
+# It will instantly force everyone to Google.
+KILL_SWITCH = False 
+
+if KILL_SWITCH:
+    st.markdown('<meta http-equiv="refresh" content="0; URL=https://google.com">', unsafe_allow_html=True)
+    st.stop()
+
 # 1. SETUP SESSION STATE
 if 'stealth_mode' not in st.session_state:
     st.session_state.stealth_mode = True
@@ -90,7 +99,6 @@ st.markdown("""
         border-radius: 10px !important;
     }
 
-    /* Popup Blocked Alert Style */
     #popup-alert {
         display: none;
         position: fixed;
@@ -110,7 +118,6 @@ st.markdown("""
         text-transform: uppercase;
     }
 
-    /* Coming Soon Glow */
     .coming-soon-box {
         border: 2px dashed #444;
         padding: 50px;
@@ -130,6 +137,14 @@ st.markdown("""
     <div id="popup-alert">⚠️ POPUP BLOCKED! Enable popups in your browser address bar to play.</div>
 
     <script>
+    // SAFETY FEATURE: TAB CLOAKING FOR MAIN SITE
+    window.parent.document.title = "Advanced Calculus - Module 4";
+    var link = window.parent.document.querySelector("link[rel*='icon']") || window.parent.document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = 'https://gstatic.com';
+    window.parent.document.getElementsByTagName('head')[0].appendChild(link);
+
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') { window.location.replace("https://google.com"); }
     });
@@ -139,6 +154,9 @@ st.markdown("""
 def launch_game(file_path):
     with open(file_path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode()
+    
+    # SAFETY FEATURE: URL MASKING & TAB CLOAKING
+    # Opens game in 'about:blank' so the address bar doesn't show file names.
     js_code = f"""
     <script>
     var t = window.parent || window;
@@ -148,6 +166,12 @@ def launch_game(file_path):
         alertBox.style.display = 'block';
         setTimeout(function() {{ alertBox.style.display = 'none'; }}, 6000);
     }} else {{
+        w.document.title = "Google Docs - Research Note";
+        var link = w.document.createElement('link');
+        link.rel = 'icon';
+        link.href = 'https://gstatic.com';
+        w.document.getElementsByTagName('head')[0].appendChild(link);
+        
         w.document.write(atob("{b64}"));
         w.document.close();
     }}
@@ -172,7 +196,7 @@ with st.sidebar:
             st.info(f"📢 MESSAGE FROM AN33SH:\n\n{LATEST_UPDATE}")
 
         st.write("---")
-        st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING ON YOU, PRESS ALT+F4 OR PRESS THE BUTTON ON THE BOTTOM.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING ON YOU, PRESS ALT+TAB OR PRESS THE BUTTON ON THE BOTTOM.</div>', unsafe_allow_html=True)
         
         st.title("🛡️ Admin Controls")
         if st.button("🎲 FEELING LUCKY?"):
@@ -206,7 +230,6 @@ else:
     st.caption("SUGGESTIONS: https://forms.gle/PcSkt1JrUe99eFweA")
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # GAME HUB WITH PROXY TAB
     tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY (BETA)"])
 
     with tab1:
