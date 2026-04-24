@@ -7,8 +7,6 @@ import random
 LATEST_UPDATE = "Hiiiiii my cutie pies ;)-An33sh"
 
 # --- SAFETY FEATURE: EMERGENCY KILL SWITCH ---
-# Set this to True if you suspect an admin is watching the site. 
-# It will instantly force everyone to Google.
 KILL_SWITCH = False 
 
 if KILL_SWITCH:
@@ -137,7 +135,6 @@ st.markdown("""
     <div id="popup-alert">⚠️ POPUP BLOCKED! Enable popups in your browser address bar to play.</div>
 
     <script>
-    // SAFETY FEATURE: TAB CLOAKING FOR MAIN SITE
     window.parent.document.title = "Advanced Calculus - Module 4";
     var link = window.parent.document.querySelector("link[rel*='icon']") || window.parent.document.createElement('link');
     link.type = 'image/x-icon';
@@ -154,9 +151,6 @@ st.markdown("""
 def launch_game(file_path):
     with open(file_path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode()
-    
-    # SAFETY FEATURE: URL MASKING & TAB CLOAKING
-    # Opens game in 'about:blank' so the address bar doesn't show file names.
     js_code = f"""
     <script>
     var t = window.parent || window;
@@ -171,7 +165,6 @@ def launch_game(file_path):
         link.rel = 'icon';
         link.href = 'https://gstatic.com';
         w.document.getElementsByTagName('head')[0].appendChild(link);
-        
         w.document.write(atob("{b64}"));
         w.document.close();
     }}
@@ -224,4 +217,45 @@ else:
     
     st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
     if os.path.exists("static/slope/an33shlogo.jpg"):
-        st.im
+        st.image("static/slope/an33shlogo.jpg", width=150)
+    st.title("AN33SH PORTAL 🐦‍🔥")
+    st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games.")
+    st.caption("SUGGESTIONS: https://forms.gle")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY (BETA)"])
+
+    with tab1:
+        game_dir = "static/slope"
+        @st.fragment
+        def game_hub():
+            if os.path.exists(game_dir): 
+                all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
+                search_col, page_col = st.columns(2)
+                with search_col: query = st.text_input("🔍 Search games...", placeholder="Slope...").lower()
+                filtered = [f for f in all_files if query in f.lower()]
+                pages = max(1, (len(filtered) // 12) + 1)
+                with page_col: page = st.number_input("Page", min_value=1, max_value=pages, step=1)
+                
+                st.write("---")
+                display_list = filtered[(page-1)*12 : page*12]
+                cols = st.columns(3)
+                for i, file_name in enumerate(display_list):
+                    display_name = file_name.replace(".html", "").replace("_", " ").title()
+                    with cols[i % 3]:
+                        with st.container(border=True):
+                            st.subheader(display_name)
+                            if st.button(f"PLAY", key=f"p_{file_name}"):
+                                launch_game(os.path.join(game_dir, file_name))
+        game_hub()
+
+    with tab2:
+        st.write("")
+        st.markdown("""
+            <div class="coming-soon-box">
+                <div class="coming-soon-text">⚡ ULTRA-STEALTH PROXY ⚡</div>
+                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed Filters...</p>
+                <h2 style="color: white; margin-top: 30px;">STATUS: <span style="color: #ff4b4b;">COMING SOON</span></h2>
+            </div>
+        """, unsafe_allow_html=True)
+        st.text_input("Enter URL to Unblock", placeholder="https://youtube.com...", disabled=True)
