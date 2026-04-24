@@ -7,8 +7,6 @@ import random
 LATEST_UPDATE = "Hiiiiii my cutie pies ;)-An33sh"
 
 # --- SAFETY FEATURE: EMERGENCY KILL SWITCH ---
-# Set this to True if you suspect an admin is watching the site. 
-# It will instantly force everyone to Google.
 KILL_SWITCH = False 
 
 if KILL_SWITCH:
@@ -119,25 +117,24 @@ st.markdown("""
     }
 
     .coming-soon-box {
-        border: 2px dashed #444;
-        padding: 50px;
+        border: 1px solid #333;
+        padding: 30px;
         text-align: center;
         border-radius: 20px;
         background: rgba(255,255,255,0.02);
+        margin-bottom: 20px;
     }
     .coming-soon-text {
         font-family: 'JetBrains Mono', monospace;
         color: #ff4b4b;
-        font-size: 24px;
+        font-size: 20px;
         font-weight: bold;
-        text-shadow: 0 0 10px rgba(255, 75, 75, 0.5);
     }
     </style>
 
     <div id="popup-alert">⚠️ POPUP BLOCKED! Enable popups in your browser address bar to play.</div>
 
     <script>
-    // SAFETY FEATURE: TAB CLOAKING FOR MAIN SITE
     window.parent.document.title = "Advanced Calculus - Module 4";
     var link = window.parent.document.querySelector("link[rel*='icon']") || window.parent.document.createElement('link');
     link.type = 'image/x-icon';
@@ -154,9 +151,6 @@ st.markdown("""
 def launch_game(file_path):
     with open(file_path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode()
-    
-    # SAFETY FEATURE: URL MASKING & TAB CLOAKING
-    # Opens game in 'about:blank' so the address bar doesn't show file names.
     js_code = f"""
     <script>
     var t = window.parent || window;
@@ -171,7 +165,6 @@ def launch_game(file_path):
         link.rel = 'icon';
         link.href = 'https://gstatic.com';
         w.document.getElementsByTagName('head')[0].appendChild(link);
-        
         w.document.write(atob("{b64}"));
         w.document.close();
     }}
@@ -226,8 +219,8 @@ else:
     if os.path.exists("static/slope/an33shlogo.jpg"):
         st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
-    st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. KEEP THE URL BOX BLANK AND NEVER LET A TEACHER SEE THIS SITE.")
-    st.caption("SUGGESTIONS: https://forms.gle/PcSkt1JrUe99eFweA")
+    st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games.")
+    st.caption("SUGGESTIONS: https://forms.gle")
     st.markdown('</div>', unsafe_allow_html=True)
 
     tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY (BETA)"])
@@ -261,9 +254,14 @@ else:
         st.markdown("""
             <div class="coming-soon-box">
                 <div class="coming-soon-text">⚡ ULTRA-STEALTH PROXY ⚡</div>
-                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed Filters...</p>
-                <h2 style="color: white; margin-top: 30px;">STATUS: <span style="color: #ff4b4b;">COMING SOON</span></h2>
-                <p style="color: #555;">An33sh is working on the backend. Stay tuned.</p>
+                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed...</p>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; margin: 20px 0;">
+                    <iframe src="https://duckduckgo.com Privately&focus=yes" 
+                            style="overflow:hidden;margin:0;padding:0;width:100%;height:40px;" 
+                            frameborder="0">
+                    </iframe>
+                </div>
+                <h3 style="color: white;">BACKEND STATUS: <span style="color: #ff4b4b;">85% COMPLETE</span></h3>
             </div>
         """, unsafe_allow_html=True)
         st.text_input("Enter URL to Unblock", placeholder="https://youtube.com...", disabled=True)
