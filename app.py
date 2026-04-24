@@ -203,7 +203,7 @@ else:
         st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. KEEP THE URL BOX BLANK AND NEVER LET A TEACHER SEE THIS SITE.")
-    st.caption("SUGGESTIONS: https://forms.gle")
+    st.caption("SUGGESTIONS: https://forms.gle/PcSkt1JrUe99eFweA")
     st.markdown('</div>', unsafe_allow_html=True)
 
     # GAME HUB WITH PROXY TAB
