@@ -89,7 +89,27 @@ st.markdown("""
         color: white !important;
         border-radius: 10px !important;
     }
+
+    /* Popup Blocked Alert Style */
+    #popup-alert {
+        display: none;
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        background: #ff4b4b;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 50px;
+        font-weight: bold;
+        box-shadow: 0 0 20px rgba(255, 75, 75, 0.6);
+        border: 2px solid white;
+        text-align: center;
+    }
     </style>
+
+    <div id="popup-alert">⚠️ POPUP BLOCKED! Enable popups in your browser address bar to play.</div>
 
     <script>
     document.addEventListener('keydown', function(e) {
@@ -101,7 +121,21 @@ st.markdown("""
 def launch_game(file_path):
     with open(file_path, "rb") as f:
         b64 = base64.b64encode(f.read()).decode()
-    js_code = f"""<script>var t=window.parent||window;var w=t.open("about:blank","_blank");w.document.write(atob("{b64}"));w.document.close();</script>"""
+    js_code = f"""
+    <script>
+    var t = window.parent || window;
+    var w = t.open("about:blank", "_blank");
+    if (!w || w.closed || typeof w.closed == 'undefined') {{
+        // Show alert if popup is blocked
+        var alertBox = t.document.getElementById('popup-alert');
+        alertBox.style.display = 'block';
+        setTimeout(function() {{ alertBox.style.display = 'none'; }}, 6000);
+    }} else {{
+        w.document.write(atob("{b64}"));
+        w.document.close();
+    }}
+    </script>
+    """
     st.components.v1.html(js_code, height=0)
 
 # --- SIDEBAR ---
@@ -121,7 +155,6 @@ with st.sidebar:
             st.info(f"📢 MESSAGE FROM AN33SH:\n\n{LATEST_UPDATE}")
 
         st.write("---")
-        # Restored Sidebar Alert
         st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING ON YOU, PRESS ALT+F4 OR PRESS THE BUTTON ON THE BOTTOM.</div>', unsafe_allow_html=True)
         
         st.title("🛡️ Admin Controls")
@@ -153,7 +186,6 @@ else:
         st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games. KEEP THE URL BOX BLANK AND NEVER LET A TEACHER SEE THIS SITE.")
-    # Restored Suggestions Caption
     st.caption("SUGGESTIONS: https://forms.gle/32uS6xmQuGyHP6Hi8")
     st.markdown('</div>', unsafe_allow_html=True)
 
