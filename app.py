@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 # --- 0. DEVELOPER NOTIFICATION ---
-LATEST_UPDATE = "suck my balls Ian -An33sh"
+LATEST_UPDATE = "SUCK MY BALLS IAN-An33sh"
 
 # --- SAFETY FEATURE: EMERGENCY KILL SWITCH ---
 KILL_SWITCH = False 
@@ -22,11 +22,9 @@ def get_active_users():
     if 'user_id' not in st.session_state:
         st.session_state.user_id = str(random.randint(10000, 99999))
     
-    # Heartbeat
     session_file = session_dir / f"{st.session_state.user_id}.lock"
     session_file.touch()
     
-    # Cleanup (30s timeout)
     current_time = time.time()
     for f in session_dir.glob("*.lock"):
         if current_time - f.stat().st_mtime > 30:
@@ -53,10 +51,20 @@ st.markdown("""
     html, body, [data-testid="stAppViewContainer"] { background: radial-gradient(circle at top right, #0a0a0c, #050505); font-family: 'Inter', sans-serif; color: #e0e0e0; }
     #MainMenu {visibility: hidden;} footer {visibility: hidden;}
     [data-testid="stVerticalBlockBorderWrapper"] { background: rgba(20, 20, 25, 0.7) !important; backdrop-filter: blur(10px); border-radius: 20px !important; border: 1px solid rgba(255, 255, 255, 0.05) !important; transition: transform 0.3s ease, border 0.3s ease; }
-    [data-testid="stVerticalBlockBorderWrapper"]:hover { border: 1px solid rgba(255, 75, 75, 0.4) !important; transform: translateY(-5px); }
     [data-testid="stSidebar"] { background-color: rgba(0, 0, 0, 0.95) !important; border-right: 1px solid #222; }
     .stButton>button { width: 100%; border-radius: 12px; height: 3.5em; background: linear-gradient(135deg, #ff4b4b 0%, #7d0000 100%); color: white; border: none; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(255, 75, 75, 0.2); }
-    div.stButton > button[key="ghost_btn"] { background: transparent !important; color: transparent !important; border: none !important; height: 10px !important; cursor: default !important; }
+    
+    /* GHOST BUTTON: Styled to be hidden way down */
+    div.stButton > button[key="ghost_btn"] { 
+        background: transparent !important; 
+        color: transparent !important; 
+        border: none !important; 
+        height: 10px !important; 
+        box-shadow: none !important;
+        min-height: 10px !important;
+        padding: 0 !important;
+    }
+
     .spy-warning { color: #ff4b4b; font-weight: 900; font-size: 14px; text-align: center; border: 2px solid #ff4b4b; padding: 10px; border-radius: 10px; margin-bottom: 20px; text-transform: uppercase; }
     h1, h2, h3 { font-family: 'JetBrains Mono', monospace !important; font-weight: 800 !important; background: linear-gradient(90deg, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .stTextInput input { background-color: #111 !important; border: 1px solid #333 !important; color: white !important; border-radius: 10px !important; }
@@ -106,7 +114,9 @@ with st.sidebar:
         st.write("---")
         st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold; cursor:pointer;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
     
-    for _ in range(15): st.write("")
+    # THE SCROLL GAP: Hidden spacer so you have to scroll down to find the ghost button
+    for _ in range(25): st.write("")
+    
     if st.button(" ", key="ghost_btn"):
         st.session_state.stealth_mode = not st.session_state.stealth_mode
         st.rerun()
@@ -123,16 +133,10 @@ else:
     if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
     
-    # --- USER COUNT ---
-    active_users = get_active_users()
-    st.markdown(f"""
-        <div style="text-align: center; margin-top: -15px; margin-bottom: 20px;">
-            <span style="background: rgba(0, 255, 0, 0.1); color: #00ff00; padding: 5px 15px; border-radius: 50px; font-size: 12px; font-weight: bold; border: 1px solid rgba(0, 255, 0, 0.3);">
-                ● {active_users} USERS ONLINE
-            </span>
-        </div>
-    """, unsafe_allow_html=True)
-
+    # REAL ONLINE USERS
+    count = get_active_users()
+    st.markdown(f'<div style="text-align:center;margin-top:-15px;margin-bottom:20px;"><span style="background:rgba(0,255,0,0.1);color:#00ff00;padding:5px 15px;border-radius:50px;font-size:12px;font-weight:bold;border:1px solid rgba(0,255,0,0.3);">● {count} USERS ONLINE</span></div>', unsafe_allow_html=True)
+    
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games.")
     st.caption("SUGGESTIONS: https://forms.gle")
     st.markdown('</div>', unsafe_allow_html=True)
