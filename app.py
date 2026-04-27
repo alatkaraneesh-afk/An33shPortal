@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import base64
 import random
+from streamlit.runtime import runtime  # Needed for real count
 
 # --- 0. DEVELOPER NOTIFICATION ---
 LATEST_UPDATE = "Hiiiiii my cutie pies ;)-An33sh"
@@ -12,6 +13,14 @@ KILL_SWITCH = False
 if KILL_SWITCH:
     st.markdown('<meta http-equiv="refresh" content="0; URL=https://google.com">', unsafe_allow_html=True)
     st.stop()
+
+# --- REAL USER COUNT LOGIC ---
+def get_real_user_count():
+    try:
+        sessions = runtime.get_instance()._session_mgr.list_active_sessions()
+        return len(sessions)
+    except:
+        return 1
 
 # 1. SETUP SESSION STATE
 if 'stealth_mode' not in st.session_state:
@@ -219,12 +228,24 @@ else:
     if os.path.exists("static/slope/an33shlogo.jpg"):
         st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
+    
+    # --- REAL USER COUNT DISPLAY ---
+    real_online = get_real_user_count()
+    st.markdown(f"""
+        <div style="text-align: center; margin-top: -15px; margin-bottom: 20px;">
+            <span style="background: rgba(0, 255, 0, 0.1); color: #00ff00; padding: 5px 15px; border-radius: 50px; font-size: 12px; font-weight: bold; border: 1px solid rgba(0, 255, 0, 0.3);">
+                ● {real_online} USERS ONLINE
+            </span>
+        </div>
+    """, unsafe_allow_html=True)
+
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games.")
     st.caption("SUGGESTIONS: https://forms.gle/YL2CktZNfCZo7Bsb9")
     st.markdown('</div>', unsafe_allow_html=True)
 
+    # Tabs logic continues below...
     tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY (BETA)"])
-
+    
     with tab1:
         game_dir = "static/slope"
         @st.fragment
@@ -254,8 +275,8 @@ else:
         st.markdown("""
             <div class="coming-soon-box">
                 <div class="coming-soon-text">⚡ ULTRA-STEALTH PROXY ⚡</div>
-                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed Filters...</p>
-                <h2 style="color: white; margin-top: 30px;">STATUS: <span style="color: #ff4b4b;">COMING SOON</span></h2>
+                <p style="color: #888; margin-top: 10px;">Bypassing iBoss, GoGuardian, and Lightspeed...</p>
+                <h3 style="color: white; margin-top: 30px;">STATUS: <span style="color: #ff4b4b;">COMING SOON</span></h3>
             </div>
         """, unsafe_allow_html=True)
         st.text_input("Enter URL to Unblock", placeholder="https://youtube.com...", disabled=True)
