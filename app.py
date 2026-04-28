@@ -18,28 +18,23 @@ if KILL_SWITCH:
     st.stop()
 
 # --- STABLE AI LOGIC (AUTO-SELECTOR) ---
+# --- SAFE-MODE AI LOGIC ---
 def get_ai_response(prompt):
-    # These are currently the 3 most stable 'no-key' providers
-    test_providers = [
-        g4f.Provider.Blackbox,
-        g4f.Provider.ChatgptNext,
-        g4f.Provider.PollinationsAI
-    ]
+    try:
+        # We don't name providers here. 
+        # This prevents the "AttributeError" that causes the ghost crash.
+        response = g4f.ChatCompletion.create(
+            model=g4f.models.default, 
+            messages=[{"role": "user", "content": prompt}],
+            timeout=20
+        )
+        if response and len(str(response)) > 2:
+            return response
+    except Exception as e:
+        # This prints the error to your logs instead of crashing the app
+        print(f"DEBUG: {str(e)}") 
     
-    for provider in test_providers:
-        try:
-            response = g4f.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                provider=provider,
-                messages=[{"role": "user", "content": prompt}],
-                timeout=15
-            )
-            if response and len(str(response)) > 5:
-                return response
-        except:
-            continue # Try the next provider in the list
-            
-    return "❌ All uplinks blocked. School firewall is peaking or providers are patched. Try again in 5 mins."
+    return "⚠️ Connection timed out. The school firewall is currently blocking the AI uplink."
 
 
 # --- REAL USER COUNT LOGIC ---
