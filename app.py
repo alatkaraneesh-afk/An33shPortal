@@ -3,9 +3,9 @@ import os
 import base64
 import random
 import time
+import requests  # NEW: Direct API calls
 from pathlib import Path
 from streamlit_autorefresh import st_autorefresh 
-import g4f
 
 # --- 0. DEVELOPER NOTIFICATION ---
 LATEST_UPDATE = "-An33sh"
@@ -17,25 +17,22 @@ if KILL_SWITCH:
     st.markdown('<meta http-equiv="refresh" content="0; URL=https://google.com">', unsafe_allow_html=True)
     st.stop()
 
-# --- STABLE AI LOGIC (AUTO-SELECTOR) ---
-# --- SAFE-MODE AI LOGIC ---
+# --- STABLE AI LOGIC (DIRECT ANONYMOUS UPLINK) ---
 def get_ai_response(prompt):
     try:
-        # We don't name providers here. 
-        # This prevents the "AttributeError" that causes the ghost crash.
-        response = g4f.ChatCompletion.create(
-            model=g4f.models.default, 
-            messages=[{"role": "user", "content": prompt}],
-            timeout=20
-        )
-        if response and len(str(response)) > 2:
-            return response
+        # Direct call to Pollinations anonymous endpoint to bypass 'Migration' error
+        # This is significantly more stable than the g4f library
+        url = f"https://pollinations.ai{prompt}?model=openai&json=true"
+        response = requests.get(url, timeout=15)
+        
+        if response.status_code == 200:
+            data = response.json()
+            return data['choices']['message']['content']
+        else:
+            return "⚠️ Proxy busy. Try a shorter query."
     except Exception as e:
-        # This prints the error to your logs instead of crashing the app
-        print(f"DEBUG: {str(e)}") 
-    
-    return "⚠️ Connection timed out. The school firewall is currently blocking the AI uplink."
-
+        print(f"DEBUG: {e}")
+        return "❌ All uplinks blocked. School firewall is peaking right now."
 
 # --- REAL USER COUNT LOGIC ---
 def get_active_users():
@@ -88,7 +85,6 @@ st.markdown("""
     .stTextInput input { background-color: #111 !important; border: 1px solid #333 !important; color: white !important; border-radius: 10px !important; }
     .ai-msg { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border-left: 4px solid #ff4b4b; margin-top: 10px; color: #fff; line-height: 1.6; }
     </style>
-
     <script>
     window.parent.document.title = "Advanced Calculus - Module 4";
     document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { window.location.replace("https://google.com"); } });
@@ -170,12 +166,10 @@ else:
                         if st.button("PLAY", key=f"p_{file_name}"): launch_game(os.path.join(game_dir, file_name))
     
     with tab2:
-        # FRAGMENT ISOLATION: Prevents autorefresh from killing the AI process
         @st.fragment
         def ai_terminal():
             st.markdown("### 🛰️ AI Proxy Terminal")
             u_query = st.text_input("Enter Command", key="ai_terminal_input", placeholder="Ask anything...")
-            
             ans_placeholder = st.empty()
             
             if st.button("EXECUTE", key="ai_exec_btn"):
@@ -188,5 +182,4 @@ else:
                     st.error("Input required.")
             elif st.session_state.ai_history:
                 ans_placeholder.markdown(f'<div class="ai-msg">{st.session_state.ai_history}</div>', unsafe_allow_html=True)
-        
         ai_terminal()
