@@ -20,11 +20,12 @@ if KILL_SWITCH:
 # --- STABLE AI LOGIC (AUTO-SELECTOR) ---
 def get_ai_response(prompt):
     try:
-        # Using automatic provider selection to avoid AttributeError from removed providers
+        # Forced choice of a reliable model to avoid AttributeError
         response = g4f.ChatCompletion.create(
-            model=g4f.models.default, 
+            model="gpt-3.5-turbo", 
             messages=[{"role": "user", "content": prompt}],
-            timeout=25
+            timeout=25,
+            stream=False # Essential for Streamlit stability
         )
         if response and len(str(response)) > 2:
             return response
@@ -166,17 +167,23 @@ else:
                         if st.button("PLAY", key=f"p_{file_name}"): launch_game(os.path.join(game_dir, file_name))
     
     with tab2:
-        st.markdown("### 🛰️ AI Proxy Terminal")
-        st.caption("Auto-bypassing firewalls...")
+        # FRAGMENT ISOLATION: Prevents autorefresh from killing the AI process
+        @st.fragment
+        def ai_terminal():
+            st.markdown("### 🛰️ AI Proxy Terminal")
+            u_query = st.text_input("Enter Command", key="ai_terminal_input", placeholder="Ask anything...")
+            
+            ans_placeholder = st.empty()
+            
+            if st.button("EXECUTE", key="ai_exec_btn"):
+                if u_query:
+                    with st.spinner("Decoding packets..."):
+                        res = get_ai_response(u_query)
+                        st.session_state.ai_history = res
+                        ans_placeholder.markdown(f'<div class="ai-msg">{res}</div>', unsafe_allow_html=True)
+                else:
+                    st.error("Input required.")
+            elif st.session_state.ai_history:
+                ans_placeholder.markdown(f'<div class="ai-msg">{st.session_state.ai_history}</div>', unsafe_allow_html=True)
         
-        user_query = st.text_input("Enter Command / Question", key="ai_query")
-        if st.button("EXECUTE"):
-            if user_query:
-                with st.spinner("Decoding packets..."):
-                    response = get_ai_response(user_query)
-                    st.session_state.ai_history = response
-            else:
-                st.error("Missing input.")
-        
-        if st.session_state.ai_history:
-            st.markdown(f'<div class="ai-msg">{st.session_state.ai_history}</div>', unsafe_allow_html=True)
+        ai_terminal()
