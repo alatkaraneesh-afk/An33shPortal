@@ -4,7 +4,8 @@ import base64
 import random
 import time
 from pathlib import Path
-from streamlit_autorefresh import st_autorefresh # Required for fast refresh
+from streamlit_autorefresh import st_autorefresh 
+import g4f  # NEW: For No-Key AI
 
 # --- 0. DEVELOPER NOTIFICATION ---
 LATEST_UPDATE = "-An33sh"
@@ -15,6 +16,17 @@ KILL_SWITCH = False
 if KILL_SWITCH:
     st.markdown('<meta http-equiv="refresh" content="0; URL=https://google.com">', unsafe_allow_html=True)
     st.stop()
+
+# --- AI LOGIC (NO KEY NEEDED) ---
+def get_ai_response(prompt):
+    try:
+        response = g4f.ChatCompletion.create(
+            model=g4f.models.gpt_4,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return response
+    except Exception as e:
+        return "⚠️ AI Link Severed. Try again in a minute."
 
 # --- REAL USER COUNT LOGIC ---
 def get_active_users():
@@ -28,7 +40,7 @@ def get_active_users():
     
     current_time = time.time()
     for f in session_dir.glob("*.lock"):
-        if current_time - f.stat().st_mtime > 10: # Faster cleanup for faster refresh
+        if current_time - f.stat().st_mtime > 10: 
             try: f.unlink()
             except: pass
     return len(list(session_dir.glob("*.lock")))
@@ -63,6 +75,9 @@ st.markdown("""
     .spy-warning { color: #ff4b4b; font-weight: 900; font-size: 14px; text-align: center; border: 2px solid #ff4b4b; padding: 10px; border-radius: 10px; margin-bottom: 20px; text-transform: uppercase; }
     h1, h2, h3 { font-family: 'JetBrains Mono', monospace !important; font-weight: 800 !important; background: linear-gradient(90deg, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .stTextInput input { background-color: #111 !important; border: 1px solid #333 !important; color: white !important; border-radius: 10px !important; }
+    
+    /* Chat bubbles for AI */
+    .ai-msg { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border-left: 4px solid #ff4b4b; margin-top: 10px; }
     </style>
 
     <script>
@@ -112,14 +127,12 @@ if st.session_state.stealth_mode:
     st.info("Current Topic: Linear Second-Order Equations with Constant Coefficients")
     st.text_area("Research Field", "Analysing socio-political shifts...", height=400)
 else:
-    # 2-Second Fast Refresh
     st_autorefresh(interval=2000, key="frequent_refresh")
     
     st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
     if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
     
-    # FRAGMENT: Only the counter refreshes every 2 seconds
     @st.fragment
     def live_counter():
         count = get_active_users()
@@ -133,10 +146,10 @@ else:
     live_counter()
 
     st.caption("Your boy noticed IBoss is blocking everything lately. Dont worry, take these 300+ games.")
-    st.caption("SUGGESTIONS: https://forms.gle")
     st.markdown('</div>', unsafe_allow_html=True)
 
-    tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY (BETA)"])
+    tab1, tab2 = st.tabs(["🎮 GAMES", "🤖 UNFILTERED AI"])
+    
     with tab1:
         game_dir = "static/slope"
         if os.path.exists(game_dir): 
@@ -155,5 +168,16 @@ else:
                     with st.container(border=True):
                         st.subheader(file_name.replace(".html", "").replace("_", " ").title())
                         if st.button("PLAY", key=f"p_{file_name}"): launch_game(os.path.join(game_dir, file_name))
+    
     with tab2:
-        st.markdown('<div style="border:1px dashed #444;padding:50px;text-align:center;border-radius:20px;background:rgba(255,255,255,0.02);"><div style="color:#ff4b4b;font-size:24px;font-weight:bold;">⚡ ULTRA-STEALTH PROXY ⚡</div><h3 style="color:white;margin-top:30px;">STATUS: <span style="color:#ff4b4b;">COMING SOON</span></h3></div>', unsafe_allow_html=True)
+        st.markdown("### 🛰️ DeepSeek / GPT Proxy")
+        st.caption("No keys, no logs. Powered by G4F.")
+        
+        prompt = st.text_input("Entry query...", placeholder="Ask me to write an essay or solve a problem...")
+        if st.button("EXECUTE"):
+            if prompt:
+                with st.spinner("Bypassing filters..."):
+                    res = get_ai_response(prompt)
+                    st.markdown(f'<div class="ai-msg">{res}</div>', unsafe_allow_html=True)
+            else:
+                st.warning("Enter something first, boss.")
