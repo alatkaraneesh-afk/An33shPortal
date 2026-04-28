@@ -19,20 +19,28 @@ if KILL_SWITCH:
 
 # --- STABLE AI LOGIC (AUTO-SELECTOR) ---
 def get_ai_response(prompt):
-    try:
-        # Forced choice of a reliable model to avoid AttributeError
-        response = g4f.ChatCompletion.create(
-            model="gpt-3.5-turbo", 
-            messages=[{"role": "user", "content": prompt}],
-            timeout=25,
-            stream=False # Essential for Streamlit stability
-        )
-        if response and len(str(response)) > 2:
-            return response
-    except Exception as e:
-        print(f"Connection Error: {e}")
+    # These are currently the 3 most stable 'no-key' providers
+    test_providers = [
+        g4f.Provider.Blackbox,
+        g4f.Provider.ChatgptNext,
+        g4f.Provider.PollinationsAI
+    ]
     
-    return "❌ All uplinks blocked. School firewall might be too strong or providers are down."
+    for provider in test_providers:
+        try:
+            response = g4f.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                provider=provider,
+                messages=[{"role": "user", "content": prompt}],
+                timeout=15
+            )
+            if response and len(str(response)) > 5:
+                return response
+        except:
+            continue # Try the next provider in the list
+            
+    return "❌ All uplinks blocked. School firewall is peaking or providers are patched. Try again in 5 mins."
+
 
 # --- REAL USER COUNT LOGIC ---
 def get_active_users():
