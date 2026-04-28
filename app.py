@@ -17,28 +17,21 @@ if KILL_SWITCH:
     st.markdown('<meta http-equiv="refresh" content="0; URL=https://google.com">', unsafe_allow_html=True)
     st.stop()
 
-# --- IMPROVED AI LOGIC (WITH RETRY LOOP) ---
+# --- STABLE AI LOGIC (AUTO-SELECTOR) ---
 def get_ai_response(prompt):
-    # Try different providers in case one is blocked or down
-    providers = [
-        g4f.Provider.Blackbox,
-        g4f.Provider.ChatgptNext,
-        g4f.Provider.DeepInfra,
-        g4f.Provider.Liaobots
-    ]
+    try:
+        # Using automatic provider selection to avoid AttributeError from removed providers
+        response = g4f.ChatCompletion.create(
+            model=g4f.models.default, 
+            messages=[{"role": "user", "content": prompt}],
+            timeout=25
+        )
+        if response and len(str(response)) > 2:
+            return response
+    except Exception as e:
+        print(f"Connection Error: {e}")
     
-    for provider in providers:
-        try:
-            response = g4f.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                provider=provider,
-                messages=[{"role": "user", "content": prompt}],
-            )
-            if response and len(response) > 2:
-                return response
-        except:
-            continue
-    return "❌ All uplinks blocked. School firewall might be too strong right now."
+    return "❌ All uplinks blocked. School firewall might be too strong or providers are down."
 
 # --- REAL USER COUNT LOGIC ---
 def get_active_users():
@@ -89,7 +82,7 @@ st.markdown("""
     .spy-warning { color: #ff4b4b; font-weight: 900; font-size: 14px; text-align: center; border: 2px solid #ff4b4b; padding: 10px; border-radius: 10px; margin-bottom: 20px; text-transform: uppercase; }
     h1, h2, h3 { font-family: 'JetBrains Mono', monospace !important; font-weight: 800 !important; background: linear-gradient(90deg, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .stTextInput input { background-color: #111 !important; border: 1px solid #333 !important; color: white !important; border-radius: 10px !important; }
-    .ai-msg { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border-left: 4px solid #ff4b4b; margin-top: 10px; color: #fff; font-family: 'Inter', sans-serif; }
+    .ai-msg { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border-left: 4px solid #ff4b4b; margin-top: 10px; color: #fff; line-height: 1.6; }
     </style>
 
     <script>
@@ -174,7 +167,7 @@ else:
     
     with tab2:
         st.markdown("### 🛰️ AI Proxy Terminal")
-        st.caption("Status: Bypassing Firewalls...")
+        st.caption("Auto-bypassing firewalls...")
         
         user_query = st.text_input("Enter Command / Question", key="ai_query")
         if st.button("EXECUTE"):
