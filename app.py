@@ -3,48 +3,15 @@ import os
 import base64
 import random
 import time
-import requests  # NEW: Direct API calls
 from pathlib import Path
 from streamlit_autorefresh import st_autorefresh 
 
 # --- 0. DEVELOPER NOTIFICATION ---
-LATEST_UPDATE = "IBOSS SUCKS-An33sh"
+LATEST_UPDATE = "-An33sh"
 
-# --- SAFETY FEATURE: EMERGENCY KILL SWITCH ---
+# --- SAFETY FEATURE: THRESHOLD LOCK ---
+MAX_USERS = 15 
 KILL_SWITCH = False 
-
-if KILL_SWITCH:
-    st.markdown('<meta http-equiv="refresh" content="0; URL=https://google.com">', unsafe_allow_html=True)
-    st.stop()
-
-def get_ai_response(prompt):
-    try:
-        # We use an obscure DuckDuckGo AI proxy (often overlooked by ZTNA)
-        # or a direct Cloudflare-style worker endpoint.
-        # This specific endpoint is a 'stealth' relay.
-        
-        url = "https://duckduckgo.com"
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-            "x-vqd-4": "1" # Some proxies require this 'handshake'
-        }
-        
-        # Alternative: Let's try the most 'innocent' looking endpoint left:
-        # This is a public API that mimics a standard search request.
-        api_url = f"https://pollinations.ai{prompt}?model=openai&json=true"
-        
-        response = requests.get(api_url, timeout=10)
-        
-        if response.status_code == 200:
-            return response.json()['choices'][0]['message']['content']
-        else:
-            # If Pollinations is dead, we try the 'Google Search' trick
-            # Schools rarely block Google's API subdomains
-            return "⚠️ ZTNA Heartbeat detected. Proxy terminal restricted."
-            
-    except:
-        return "❌ Signal Lost. Use a Hotspot to bypass ZTNA."
-
 
 # --- REAL USER COUNT LOGIC ---
 def get_active_users():
@@ -52,10 +19,8 @@ def get_active_users():
     session_dir.mkdir(exist_ok=True)
     if 'user_id' not in st.session_state:
         st.session_state.user_id = str(random.randint(10000, 99999))
-    
     session_file = session_dir / f"{st.session_state.user_id}.lock"
     session_file.touch()
-    
     current_time = time.time()
     for f in session_dir.glob("*.lock"):
         if current_time - f.stat().st_mtime > 10: 
@@ -63,13 +28,16 @@ def get_active_users():
             except: pass
     return len(list(session_dir.glob("*.lock")))
 
+active_now = get_active_users()
+
+# --- KILL SWITCH CHECK ---
+if active_now > MAX_USERS or KILL_SWITCH:
+    st.markdown('<meta http-equiv="refresh" content="0; URL=https://google.com">', unsafe_allow_html=True)
+    st.stop()
+
 # 1. SETUP SESSION STATE
 if 'stealth_mode' not in st.session_state:
     st.session_state.stealth_mode = True
-if 'show_notif' not in st.session_state:
-    st.session_state.show_notif = False
-if 'ai_history' not in st.session_state:
-    st.session_state.ai_history = ""
 
 # 2. DYNAMIC PAGE CONFIG
 if st.session_state.stealth_mode:
@@ -77,7 +45,7 @@ if st.session_state.stealth_mode:
 else:
     st.set_page_config(page_title="AN33SH PORTAL", page_icon="🐦‍🔥", layout="wide")
 
-# --- UI STYLE ---
+# --- UI STYLE (CSS) ---
 st.markdown("""
     <style>
     @import url('https://googleapis.com');
@@ -86,22 +54,23 @@ st.markdown("""
     [data-testid="stVerticalBlockBorderWrapper"] { background: rgba(20, 20, 25, 0.7) !important; backdrop-filter: blur(10px); border-radius: 20px !important; border: 1px solid rgba(255, 255, 255, 0.05) !important; transition: transform 0.3s ease, border 0.3s ease; }
     [data-testid="stVerticalBlockBorderWrapper"]:hover { border: 1px solid rgba(255, 75, 75, 0.4) !important; transform: translateY(-5px); }
     [data-testid="stSidebar"] { background-color: rgba(0, 0, 0, 0.95) !important; border-right: 1px solid #222; }
-    .stButton>button { width: 100%; border-radius: 12px; height: 3.5em; background: linear-gradient(135deg, #ff4b4b 0%, #7d0000 100%); color: white; border: none; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(255, 75, 75, 0.2); }
-    
-    div.stButton > button[key="ghost_btn"] { 
-        background: transparent !important; color: transparent !important; border: none !important; 
-        height: 10px !important; box-shadow: none !important; min-height: 10px !important; padding: 0 !important;
-    }
-    .spy-warning { color: #ff4b4b; font-weight: 900; font-size: 14px; text-align: center; border: 2px solid #ff4b4b; padding: 10px; border-radius: 10px; margin-bottom: 20px; text-transform: uppercase; }
-    h1, h2, h3 { font-family: 'JetBrains Mono', monospace !important; font-weight: 800 !important; background: linear-gradient(90deg, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .stTextInput input { background-color: #111 !important; border: 1px solid #333 !important; color: white !important; border-radius: 10px !important; }
-    .ai-msg { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 15px; border-left: 4px solid #ff4b4b; margin-top: 10px; color: #fff; line-height: 1.6; }
+    .stButton>button { width: 100%; border-radius: 12px; height: 3.5em; background: linear-gradient(135deg, #ff4b4b 0%, #7d0000 100%); color: white; border: none; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+    div.stButton > button[key="ghost_btn"] { background: transparent !important; color: transparent !important; border: none !important; height: 10px !important; box-shadow: none !important; }
+    .spy-warning { color: #ff4b4b; font-weight: 900; font-size: 14px; text-align: center; border: 2px solid #ff4b4b; padding: 10px; border-radius: 10px; text-transform: uppercase; }
+    .coming-soon { border: 1px dashed #444; padding: 50px; text-align: center; border-radius: 20px; background: rgba(255,255,255,0.02); margin-top: 20px; }
     </style>
     <script>
     window.parent.document.title = "Advanced Calculus - Module 4";
     document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { window.location.replace("https://google.com"); } });
     </script>
 """, unsafe_allow_html=True)
+
+# --- CACHED GAME LOADING (FAST LOAD) ---
+@st.cache_data
+def get_game_files(directory):
+    if os.path.exists(directory):
+        return sorted([f for f in os.listdir(directory) if f.endswith(".html")])
+    return []
 
 def launch_game(file_path):
     with open(file_path, "rb") as f:
@@ -114,24 +83,12 @@ with st.sidebar:
     if st.session_state.stealth_mode:
         st.title("📚 Course Materials")
         st.markdown("---")
-        st.caption("• Primary Sources")
-        st.caption("• Citation Guide")
-        st.caption("• Timeline PDF")
+        st.caption("• Primary Sources\n• Citation Guide\n• Module 4 PDF")
     else:
-        if st.button("🔔 DEVELOPER NOTIFICATIONS"):
-            st.session_state.show_notif = not st.session_state.show_notif
-            st.rerun()
-        if st.session_state.show_notif: st.info(f"📢 MESSAGE FROM AN33SH:\n\n{LATEST_UPDATE}")
-        st.write("---")
-        st.markdown('<div class="spy-warning">TEACHER SIGHTED? PRESS ALT+TAB OR ESC.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="spy-warning">iBOSS IS ACTIVE. STEALTH RECOMMENDED.</div>', unsafe_allow_html=True)
         st.title("🛡️ Admin Controls")
-        if st.button("🎲 FEELING LUCKY?"):
-            game_dir = "static/slope"
-            if os.path.exists(game_dir):
-                files = [f for f in os.listdir(game_dir) if f.endswith(".html")]
-                if files: launch_game(os.path.join(game_dir, random.choice(files)))
         st.write("---")
-        st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold; cursor:pointer;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
+        st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
     
     for _ in range(25): st.write("")
     if st.button(" ", key="ghost_btn"):
@@ -142,32 +99,41 @@ with st.sidebar:
 if st.session_state.stealth_mode:
     st.title("Module 4: Differential Equations")
     st.info("Current Topic: Linear Second-Order Equations with Constant Coefficients")
-    st.text_area("Research Field", "Analysing socio-political shifts...", height=400)
+    st.text_area("Research Field", "Analysing socio-political shifts in late 20th century...", height=400)
 else:
     st_autorefresh(interval=2000, key="frequent_refresh")
     st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
     if os.path.exists("static/slope/an33shlogo.jpg"): st.image("static/slope/an33shlogo.jpg", width=150)
     st.title("AN33SH PORTAL 🐦‍🔥")
     
+    # OG CAPTIONS
+    captions = [
+        "Stay quiet, stay undetected.",
+        "Your work is safe here.",
+        "Filters are meant to be broken.",
+        "The only portal you'll ever need."
+    ]
+    st.subheader(random.choice(captions))
+    
     @st.fragment
     def live_counter():
-        count = get_active_users()
-        st.markdown(f'<div style="text-align:center;margin-top:-15px;margin-bottom:20px;"><span style="background:rgba(0,255,0,0.1);color:#00ff00;padding:5px 15px;border-radius:50px;font-size:12px;font-weight:bold;border:1px solid rgba(0,255,0,0.3);">● {count} USERS ONLINE</span></div>', unsafe_allow_html=True)
+        st.markdown(f'<div style="text-align:center;margin-top:-15px;margin-bottom:20px;"><span style="background:rgba(0,255,0,0.1);color:#00ff00;padding:5px 15px;border-radius:50px;font-size:12px;font-weight:bold;border:1px solid rgba(0,255,0,0.3);">● {active_now} USERS ONLINE</span></div>', unsafe_allow_html=True)
     live_counter()
-    st.caption("iBoss is active. Stealth mode recommended.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-    tab1, tab2 = st.tabs(["🎮 GAMES", "🤖 UNFILTERED AI"])
+    tab1, tab2 = st.tabs(["🎮 GAMES", "🌐 PROXY"])
     
     with tab1:
         game_dir = "static/slope"
-        if os.path.exists(game_dir): 
-            all_files = sorted([f for f in os.listdir(game_dir) if f.endswith(".html")])
+        all_files = get_game_files(game_dir)
+        
+        if all_files:
             c1, c2 = st.columns(2)
             with c1: query = st.text_input("🔍 Search...", placeholder="Slope...").lower()
             filtered = [f for f in all_files if query in f.lower()]
             pages = max(1, (len(filtered) // 12) + 1)
             with c2: page = st.number_input("Page", min_value=1, max_value=pages, step=1)
+            
             st.write("---")
             display = filtered[(page-1)*12 : page*12]
             cols = st.columns(3)
@@ -175,23 +141,15 @@ else:
                 with cols[i % 3]:
                     with st.container(border=True):
                         st.subheader(file_name.replace(".html", "").replace("_", " ").title())
-                        if st.button("PLAY", key=f"p_{file_name}"): launch_game(os.path.join(game_dir, file_name))
+                        if st.button("PLAY", key=f"p_{file_name}"): 
+                            launch_game(os.path.join(game_dir, file_name))
     
     with tab2:
-        @st.fragment
-        def ai_terminal():
-            st.markdown("### 🛰️ AI Proxy Terminal")
-            u_query = st.text_input("Enter Command", key="ai_terminal_input", placeholder="Ask anything...")
-            ans_placeholder = st.empty()
-            
-            if st.button("EXECUTE", key="ai_exec_btn"):
-                if u_query:
-                    with st.spinner("Decoding packets..."):
-                        res = get_ai_response(u_query)
-                        st.session_state.ai_history = res
-                        ans_placeholder.markdown(f'<div class="ai-msg">{res}</div>', unsafe_allow_html=True)
-                else:
-                    st.error("Input required.")
-            elif st.session_state.ai_history:
-                ans_placeholder.markdown(f'<div class="ai-msg">{st.session_state.ai_history}</div>', unsafe_allow_html=True)
-        ai_terminal()
+        st.markdown("""
+            <div class="coming-soon">
+                <h2 style="color:#ff4b4b;">🛰️ STEALTH PROXY</h2>
+                <p>Status: <b>ENCRYPTING TUNNELS</b></p>
+                <p style="color:#888;">Expected deployment: <b>[REDACTED]</b></p>
+                <div style="margin-top:20px; color:#555; font-size:12px;">BYPASSING ZTNA HANDSHAKES...</div>
+            </div>
+        """, unsafe_allow_html=True)
