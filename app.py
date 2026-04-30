@@ -68,17 +68,34 @@ st.markdown("""
     </script>
 """, unsafe_allow_html=True)
 
+# --- OPTIMIZED GAME LAUNCHER ---
 @st.cache_data
-def get_game_files(directory):
-    if os.path.exists(directory):
-        return sorted([f for f in os.listdir(directory) if f.endswith(".html")])
-    return []
+def get_base64_game(file_path):
+    """Encodes the game once and keeps it in memory for instant access."""
+    with open(file_path, "rb") as f:
+        return base64.b64encode(f.read()).decode()
 
 def launch_game(file_path):
-    with open(file_path, "rb") as f:
-        b64 = base64.b64encode(f.read()).decode()
-    js_code = f"""<script>var t=window.parent||window;var w=t.open("about:blank","_blank");if(w){{w.document.title="Google Docs";w.document.write(atob("{b64}"));w.document.close();}}</script>"""
+    # Retrieve the pre-encoded string (Instant)
+    b64 = get_base64_game(file_path)
+    # Using a slightly faster JS injection method
+    js_code = f"""
+    <script>
+    var w = window.open('about:blank', '_blank');
+    if(w) {{
+        w.document.title = "Google Docs"; 
+        w.document.body.style.margin = "0";
+        var ifr = w.document.createElement('iframe');
+        ifr.src = "data:text/html;base64,{b64}";
+        ifr.style.width = "100vw";
+        ifr.style.height = "100vh";
+        ifr.style.border = "none";
+        w.document.body.appendChild(ifr);
+    }}
+    </script>
+    """
     st.components.v1.html(js_code, height=0)
+
 
 # --- SIDEBAR ---
 with st.sidebar:
