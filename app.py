@@ -7,7 +7,7 @@ from pathlib import Path
 from streamlit_autorefresh import st_autorefresh
 
 # --- 0. DEVELOPER NOTIFICATION ---
-LATEST_UPDATE = "-An33sh"
+LATEST_UPDATE = "ADDED BITLIFE! -An33sh"
 
 # --- SAFETY FEATURE: THRESHOLD LOCK ---
 MAX_USERS = 15
