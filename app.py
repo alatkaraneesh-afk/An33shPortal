@@ -132,7 +132,7 @@ else:
         st.subheader(random.choice(caps))
     timed_caption()
     
-    st.caption("SUGGESTIONS: https://forms.gle/NUxXy49s4GcoHMAj9)
+    st.caption("SUGGESTIONS: https://forms.gle/NUxXy49s4GcoHMAj9")
     st.caption("EMERGENCY SITES: https://docs.google.com/document/d/1xNdJqxSORoJ5iVOjP1ofgigySlX_q4jQazalNOpxwgU/edit?usp=sharing")
     st.markdown('</div>', unsafe_allow_html=True)
 
