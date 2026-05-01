@@ -8,7 +8,7 @@ from streamlit_autorefresh import st_autorefresh
 
 # --- 0. SECURITY CONFIG ---
 MAX_USERS = 15 
-LATEST_UPDATE = "-An33sh"
+LATEST_UPDATE = "Hey guys, Im working on making the site faster. In the meantime, you can play games like BitLife, Paperio2, and 2048. Stay stealthy! -An33sh"
 GAME_DIR = "static/slope"
 LOGO_PATH = "static/slope/an33shlogo.jpg"
 SYSTEM_LOCKED = False 
