@@ -92,7 +92,6 @@ with st.sidebar:
     else:
         st.markdown(f'<div class="user-badge">● {active_now} USERS ONLINE</div>', unsafe_allow_html=True)
         
-        # TOGGLE DEVELOPER NOTIFS
         if st.button("🔔 DEVELOPER NOTIFICATIONS"):
             st.session_state.show_notif = not st.session_state.show_notif
             st.rerun()
@@ -133,27 +132,22 @@ else:
         st.subheader(random.choice(caps))
     timed_caption()
     
-    st.caption("SUGGESTIONS: https://forms.gle")
-    st.caption("EMERGENCY SITES: https://google.com")
+    st.caption("SUGGESTIONS: https://forms.gle/gagKadyHuDy6WXSS7")
+    st.caption("EMERGENCY SITES: https://docs.google.com/document/d/1xNdJqxSORoJ5iVOjP1ofgigySlX_q4jQazalNOpxwgU/edit?usp=sharing")
     st.markdown('</div>', unsafe_allow_html=True)
 
-    tab1, tab2, tab3 = st.tabs(["🎮 GAMES", "🌐 PROY", "🔊 AUDIO"])
+    tab1, tab2, tab3 = st.tabs(["🎮 GAMES", "🌐 PROXY", "🔊 SOUNDBOARD"])
     
     with tab1:
         if os.path.exists(GAME_DIR):
             all_games = sorted([f for f in os.listdir(GAME_DIR) if f.endswith(".html")])
-            
             c1, c2 = st.columns(2)
             with c1: 
                 query = st.text_input("🔍 Search...", placeholder="Type to filter...").lower()
-            
             filtered = [f for f in all_games if query in f.lower()] if query else all_games
-            
-            # PAGE SELECTOR
             pages = max(1, (len(filtered) // 12) + 1)
             with c2: 
                 page = st.number_input("Page", min_value=1, max_value=pages, step=1)
-            
             st.write("---")
             display = filtered[(page-1)*12 : page*12]
             cols = st.columns(3)
@@ -162,11 +156,13 @@ else:
                     with st.container(border=True):
                         st.subheader(file_name.replace(".html", "").replace("_", " ").title())
                         if st.button("PLAY", key=f"p_{file_name}"): launch_game(file_name)
+    
     with tab2:
-        st.markdown('<div style="border:1px dashed #444;padding:50px;text-align:center;border-radius:20px;background:rgba(255,255,255,0.02);"><h2 style="color:#ff4b4b;">🛰️ STEALTH PROY</h2><p>COMING SOON</p></div>', unsafe_allow_html=True)
+        st.markdown('<div style="border:1px dashed #444;padding:50px;text-align:center;border-radius:20px;background:rgba(255,255,255,0.02);"><h2 style="color:#ff4b4b;">🛰️ STEALTH PROXY</h2><p>COMING SOON</p></div>', unsafe_allow_html=True)
 
     with tab3:
         if os.path.exists(SOUND_DIR):
+            # Scan for sound files
             sounds = sorted([f for f in os.listdir(SOUND_DIR) if f.endswith((".mp3", ".wav"))])
             if not sounds:
                 st.info("No sounds found in static/sounds/")
@@ -174,11 +170,14 @@ else:
                 cols = st.columns(3)
                 for i, s_file in enumerate(sounds):
                     with cols[i % 3]:
+                        # Clean up the name for the button label
                         s_label = s_file.replace(".mp3", "").replace(".wav", "").replace("_", " ").upper()
                         if st.button(f"🎵 {s_label}", key=f"s_{s_file}"):
                             with open(os.path.join(SOUND_DIR, s_file), "rb") as f:
                                 s_b64 = base64.b64encode(f.read()).decode()
+                                # Secretly inject the audio player
                                 st.components.v1.html(f'<audio autoplay><source src="data:audio/mp3;base64,{s_b64}" type="audio/mp3"></audio>', height=0)
         else:
+            # Create folder if it doesn't exist yet
             os.makedirs(SOUND_DIR, exist_ok=True)
             st.info("Created sound folder. Add .mp3 files to static/sounds/ and refresh.")
