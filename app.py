@@ -78,6 +78,13 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
+
+/* Fix layout scroll constraints on the sidebar element container */
+[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
+    overflow-y: auto !important;
+    max-height: 100vh !important;
+}
+
 [data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(20, 20, 25, 0.7) !important;
     backdrop-filter: blur(10px);
@@ -171,8 +178,9 @@ with st.sidebar:
         st.write("---")
         st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
         
-        for _ in range(25):
-            st.write("")
+        # Use single clean CSS spacing element to push the ghost button down safely
+        st.markdown('<div style="height: 45vh;"></div>', unsafe_allow_html=True)
+        
         if st.button(" ", key="ghost_btn"):
             st.session_state.stealth_mode = not st.session_state.stealth_mode
             st.rerun()
