@@ -65,7 +65,7 @@ if 'show_notif' not in st.session_state:
 if st.session_state.stealth_mode:
     st.set_page_config(page_title="Advanced Calculus - Module 4", page_icon="📝", layout="wide")
 else:
-    st.set_page_config(page_title="AN33SH PORTAL", page_icon="🐦%E2%80%8D🔥", layout="wide")
+    st.set_page_config(page_title="AN33SH PORTAL", page_icon="🔥", layout="wide")
 
 # --- 5. UI STYLE ---
 st.markdown("""
@@ -158,7 +158,6 @@ with st.sidebar:
         st.markdown("---")
         st.caption("• Primary Sources\n• Citation Guide\n• Module 4 PDF")
         
-        # Pinned directly underneath Course Materials when in stealth mode
         if st.button(" ", key="ghost_btn"):
             st.session_state.stealth_mode = not st.session_state.stealth_mode
             st.rerun()
@@ -171,16 +170,15 @@ with st.sidebar:
             st.info(f"📢 MESSAGE FROM AN33SH:\n\n{LATEST_UPDATE}")
         st.write("---")
         st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING, PRESS THE BUTTON ON THE BOTTOM OR PRESS ALT+TAB.</div>', unsafe_allow_html=True)
-        st.title("🛡%EF%B8%8F Admin Controls")
+        st.title("🛡️ Admin Controls")
         if st.button("🎲 FEELING LUCKY?"):
             if os.path.exists(GAME_DIR):
                 files = [f for f in os.listdir(GAME_DIR) if f.endswith(".html")]
                 if files:
                     launch_game(random.choice(files))
         st.write("---")
-        st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold;">⚠%EF%B8%8F EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
+        st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
         
-        # Red game portal trigger button pinned to the absolute bottom in portal mode
         if st.button(" ", key="ghost_btn"):
             st.session_state.stealth_mode = not st.session_state.stealth_mode
             st.rerun()
@@ -195,7 +193,7 @@ else:
     st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
     if os.path.exists(LOGO_PATH):
         st.image(LOGO_PATH, width=150)
-    st.title("AN33SH PORTAL 🐦%E2%80%8D🔥")
+    st.title("AN33SH PORTAL 🔥")
     
     @st.fragment(run_every=15)
     def timed_caption():
@@ -228,7 +226,7 @@ else:
                         if st.button("PLAY", key=f"p_{file_name}"):
                             launch_game(file_name)
     with tab2:
-        st.markdown('<div style="border:1px dashed #444;padding:50px;text-align:center;border-radius:20px;background:rgba(255,255,255,0.02);"><h2 style="color:#ff4b4b;">🛰%EF%B8%8F STEALTH PROXY</h2><p>COMING SOON</p></div>', unsafe_allow_html=True)
+        st.markdown('<div style="border:1px dashed #444;padding:50px;text-align:center;border-radius:20px;background:rgba(255,255,255,0.02);"><h2 style="color:#ff4b4b;">🛰️ STEALTH PROXY</h2><p>COMING SOON</p></div>', unsafe_allow_html=True)
     with tab3:
         if os.path.exists(SOUND_DIR):
             sounds = sorted([f for f in os.listdir(SOUND_DIR) if f.endswith((".mp3", ".wav"))])
