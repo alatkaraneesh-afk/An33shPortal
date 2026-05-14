@@ -136,6 +136,10 @@ h1, h2, h3 {
     display:block;
     margin-bottom:20px;
 }
+/* Force sidebar layout to completely lock height and remove scrollbar */
+[data-testid="stSidebarUserContent"] {
+    overflow-y: hidden !important;
+}
 </style>
 <script>
 window.parent.document.title = "Advanced Calculus - Module 4";
@@ -153,6 +157,11 @@ with st.sidebar:
         st.title("📚 Course Materials")
         st.markdown("---")
         st.caption("• Primary Sources\n• Citation Guide\n• Module 4 PDF")
+        
+        # Pinned directly underneath Course Materials when in stealth mode
+        if st.button(" ", key="ghost_btn"):
+            st.session_state.stealth_mode = not st.session_state.stealth_mode
+            st.rerun()
     else:
         st.markdown(f'<div class="user-badge">● {active_now} USERS ONLINE</div>', unsafe_allow_html=True)
         if st.button("🔔 DEVELOPER NOTIFICATIONS"):
@@ -170,8 +179,8 @@ with st.sidebar:
                     launch_game(random.choice(files))
         st.write("---")
         st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold;">⚠%EF%B8%8F EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
-        for _ in range(25):
-            st.write("")
+        
+        # Red game portal trigger button pinned to the absolute bottom in portal mode
         if st.button(" ", key="ghost_btn"):
             st.session_state.stealth_mode = not st.session_state.stealth_mode
             st.rerun()
