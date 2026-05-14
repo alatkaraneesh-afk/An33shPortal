@@ -78,13 +78,6 @@ html, body, [data-testid="stAppViewContainer"] {
 }
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
-
-/* Fix layout scroll constraints on the sidebar element container */
-[data-testid="stSidebar"] [data-testid="stVerticalBlock"] {
-    overflow-y: auto !important;
-    max-height: 100vh !important;
-}
-
 [data-testid="stVerticalBlockBorderWrapper"] {
     background: rgba(20, 20, 25, 0.7) !important;
     backdrop-filter: blur(10px);
@@ -169,18 +162,16 @@ with st.sidebar:
             st.info(f"📢 MESSAGE FROM AN33SH:\n\n{LATEST_UPDATE}")
         st.write("---")
         st.markdown('<div class="spy-warning">IF YOU SUSPECT A TEACHER IS SPYING, PRESS THE BUTTON ON THE BOTTOM OR PRESS ALT+TAB.</div>', unsafe_allow_html=True)
-        st.title("🛡️ Admin Controls")
+        st.title("🛡%EF%B8%8F Admin Controls")
         if st.button("🎲 FEELING LUCKY?"):
             if os.path.exists(GAME_DIR):
                 files = [f for f in os.listdir(GAME_DIR) if f.endswith(".html")]
                 if files:
                     launch_game(random.choice(files))
         st.write("---")
-        st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold;">⚠️ EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
-        
-        # Use single clean CSS spacing element to push the ghost button down safely
-        st.markdown('<div style="height: 45vh;"></div>', unsafe_allow_html=True)
-        
+        st.markdown('<a href="https://google.com" target="_self"><button style="width:100%; background:red; color:white; border-radius:10px; border:none; padding:12px; font-weight:bold;">⚠%EF%B8%8F EMERGENCY EXIT</button></a>', unsafe_allow_html=True)
+        for _ in range(25):
+            st.write("")
         if st.button(" ", key="ghost_btn"):
             st.session_state.stealth_mode = not st.session_state.stealth_mode
             st.rerun()
@@ -195,32 +186,30 @@ else:
     st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
     if os.path.exists(LOGO_PATH):
         st.image(LOGO_PATH, width=150)
-    st.title("AN33SH PORTAL 🐦‍🔥")
+    st.title("AN33SH PORTAL 🐦%E2%80%8D🔥")
     
     @st.fragment(run_every=15)
     def timed_caption():
         caps = ["Stay quiet, stay undetected.", "Your work is safe here.", "The only portal you'll ever need."]
         st.subheader(random.choice(caps))
-        
     timed_caption()
-    st.caption("SUGGESTIONS: https://forms.gle/gagKadyHuDy6WXSS7")
-    st.caption("EMERGENCY SITES: https://docs.google.com/document/d/1xNdJqxSORoJ5iVOjP1ofgigySlX_q4jQazalNOpxwgU/edit?usp=sharing")
+    
+    st.caption("SUGGESTIONS: forms.gle")
+    st.caption("EMERGENCY SITES: google.com")
     st.markdown('</div>', unsafe_allow_html=True)
     
     tab1, tab2, tab3 = st.tabs(["🎮 GAMES", "🌐 PROXY", "🔊 SOUNDBOARD"])
-    
     with tab1:
         if os.path.exists(GAME_DIR):
             all_games = sorted([f for f in os.listdir(GAME_DIR) if f.endswith(".html")])
             c1, c2 = st.columns(2)
             with c1:
                 query = st.text_input("🔍 Search...", placeholder="Type to filter...").lower()
-                filtered = [f for f in all_games if query in f.lower()] if query else all_games
-                pages = max(1, (len(filtered) // 12) + 1)
+            filtered = [f for f in all_games if query in f.lower()] if query else all_games
+            pages = max(1, (len(filtered) // 12) + 1)
             with c2:
                 page = st.number_input("Page", min_value=1, max_value=pages, step=1)
             st.write("---")
-            
             display = filtered[(page-1)*12 : page*12]
             cols = st.columns(3)
             for i, file_name in enumerate(display):
@@ -229,10 +218,8 @@ else:
                         st.subheader(file_name.replace(".html", "").replace("_", " ").title())
                         if st.button("PLAY", key=f"p_{file_name}"):
                             launch_game(file_name)
-                            
     with tab2:
-        st.markdown('<div style="border:1px dashed #444;padding:50px;text-align:center;border-radius:20px;background:rgba(255,255,255,0.02);"><h2 style="color:#ff4b4b;">🛰️ STEALTH PROXY</h2><p>COMING SOON</p></div>', unsafe_allow_html=True)
-        
+        st.markdown('<div style="border:1px dashed #444;padding:50px;text-align:center;border-radius:20px;background:rgba(255,255,255,0.02);"><h2 style="color:#ff4b4b;">🛰%EF%B8%8F STEALTH PROXY</h2><p>COMING SOON</p></div>', unsafe_allow_html=True)
     with tab3:
         if os.path.exists(SOUND_DIR):
             sounds = sorted([f for f in os.listdir(SOUND_DIR) if f.endswith((".mp3", ".wav"))])
