@@ -84,7 +84,7 @@ if 'show_notif' not in st.session_state:
 if st.session_state.stealth_mode:
     st.set_page_config(page_title="Advanced Calculus - Module 4", page_icon="📝", layout="wide")
 else:
-    st.set_page_config(page_title="AN33SH PORTAL", page_icon="🔥", layout="wide")
+    st.set_page_config(page_title="AN33SH PORTAL", page_icon="🐦‍🔥", layout="wide")
 
 # --- 5. UI STYLE ---
 st.markdown("""
@@ -230,7 +230,7 @@ else:
     st.markdown('<div style="text-align: center;">', unsafe_allow_html=True)
     if os.path.exists(LOGO_PATH):
         st.image(LOGO_PATH, width=150)
-    st.title("AN33SH PORTAL 🔥")
+    st.title("AN33SH PORTAL 🐦‍🔥")
     
     @st.fragment(run_every=15)
     def timed_caption():
@@ -238,8 +238,8 @@ else:
         st.subheader(random.choice(caps))
     timed_caption()
     
-    st.caption("SUGGESTIONS: forms.gle")
-    st.caption("EMERGENCY SITES: google.com")
+    st.caption("SUGGESTIONS: https://forms.gle/NbggSg74kXCgimkh9")
+    st.caption("EMERGENCY SITES: https://docs.google.com/document/d/1xNdJqxSORoJ5iVOjP1ofgigySlX_q4jQazalNOpxwgU/edit?usp=sharing")
     st.markdown('</div>', unsafe_allow_html=True)
     
     tab1, tab2, tab3 = st.tabs(["🎮 GAMES", "🌐 PROXY", "🔊 SOUNDBOARD"])
@@ -266,7 +266,7 @@ else:
     with tab2:
         st.markdown("""
         <div class="proxy-container">
-            <div class="proxy-text">⚠️ coming soon ⚠️</div>
+            <div class="proxy-text">☠️ coming soon ☠️</div>
         </div>
         """, unsafe_allow_html=True)
         
