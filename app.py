@@ -13,26 +13,14 @@ GAME_DIR = "static/slope"
 SOUND_DIR = "static/sounds"
 LOGO_PATH = "static/slope/an33shlogo.jpg"
 SYSTEM_LOCKED = False
-
-# --- 1. USER TRACKING ---
 def get_active_users():
-    session_dir = Path(".sessions")
-    session_dir.mkdir(exist_ok=True)
-    if 'user_id' not in st.session_state:
-        st.session_state.user_id = str(random.randint(10000, 99999))
-    
-    # Update timestamp file for this user
-    user_file = session_dir / f"{st.session_state.user_id}.lock"
-    user_file.touch()
-    
-    # Prune files older than 10 seconds for real-time accuracy
-    current_time = time.time()
-    for f in session_dir.glob("*.lock"):
-        if current_time - f.stat().st_mtime > 10:
-            try:
-                f.unlink()
-            except:
-                pass
+    try:
+        # Pulls true active browser connections directly from the Streamlit engine
+        ctxs = st.runtime.get_instance()._session_info_by_id.values()
+        return max(1, len(ctxs))
+    except:
+        return 1
+
                 
     # Return actual unique active files remaining
     return max(1, len(list(session_dir.glob("*.lock"))))
