@@ -20,15 +20,22 @@ def get_active_users():
     session_dir.mkdir(exist_ok=True)
     if 'user_id' not in st.session_state:
         st.session_state.user_id = str(random.randint(10000, 99999))
-    Path(session_dir / f"{st.session_state.user_id}.lock").touch()
+    
+    # Update timestamp file for this user
+    user_file = session_dir / f"{st.session_state.user_id}.lock"
+    user_file.touch()
+    
+    # Prune files older than 10 seconds for real-time accuracy
     current_time = time.time()
     for f in session_dir.glob("*.lock"):
-        if current_time - f.stat().st_mtime > 15:
+        if current_time - f.stat().st_mtime > 10:
             try:
                 f.unlink()
             except:
                 pass
-    return len(list(session_dir.glob("*.lock")))
+                
+    # Return actual unique active files remaining
+    return max(1, len(list(session_dir.glob("*.lock"))))
 
 active_now = get_active_users()
 
@@ -148,9 +155,23 @@ h1, h2, h3 {
     display:block;
     margin-bottom:20px;
 }
-/* Force sidebar layout to completely lock height and remove scrollbar */
-[data-testid="stSidebarUserContent"] {
-    overflow-y: hidden !important;
+.proxy-container {
+    background: rgba(255, 75, 75, 0.05);
+    border: 1px dashed rgba(255, 75, 75, 0.3);
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    margin: 20px 0;
+}
+.proxy-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, #ff4b4b, #7d0000);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
 }
 </style>
 <script>
@@ -170,8 +191,8 @@ with st.sidebar:
         st.markdown("---")
         st.caption("• Primary Sources\n• Citation Guide\n• Module 4 PDF")
         
-        # Generates vertical spacing forcing a scroll down to access the hidden button
-        for _ in range(20):
+        # Extended vertical spacing block to drop the button deep below the fold
+        for _ in range(35):
             st.write("")
             
         if st.button(" ", key="ghost_btn"):
@@ -243,7 +264,11 @@ else:
                             launch_game(file_name)
                             
     with tab2:
-        st.write("coming soon")
+        st.markdown("""
+        <div class="proxy-container">
+            <div class="proxy-text">⚠️ coming soon ⚠️</div>
+        </div>
+        """, unsafe_allow_html=True)
         
     with tab3:
         if os.path.exists(SOUND_DIR):
